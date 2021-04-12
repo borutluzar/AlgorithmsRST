@@ -104,7 +104,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.DynamicProgramming:
                     {
                         Console.WriteLine("Testing dynamic programming");
-                        Dynamic.Algorithm algType = Dynamic.Algorithm.ShuffleString;
+                        Dynamic.Algorithm algType = Dynamic.Algorithm.MaxSolidBlock;
 
                         switch (algType)
                         {
@@ -176,40 +176,6 @@ namespace Borut.Lectures.AlgorithmsRST
                                         new Item(){ Volume=6, Value=8}
                                     };*/
 
-                                    /*int volume = 35;
-                                    List<Item> lstItems = new List<Item>()
-                                    {
-                                        new Item(){ Volume=2, Value=3},
-                                        new Item(){ Volume=3, Value=5},
-                                        new Item(){ Volume=4, Value=7},
-                                        new Item(){ Volume=4, Value=3},
-                                        new Item(){ Volume=3, Value=4},
-                                        new Item(){ Volume=5, Value=4},
-                                        new Item(){ Volume=4, Value=2},
-                                        new Item(){ Volume=6, Value=7},
-                                        new Item(){ Volume=3, Value=4},
-                                        new Item(){ Volume=2, Value=4},
-                                        new Item(){ Volume=6, Value=5},
-                                        new Item(){ Volume=6, Value=8},
-                                        new Item(){ Volume=5, Value=6},
-                                        new Item(){ Volume=4, Value=5},
-                                        new Item(){ Volume=3, Value=4},
-                                        new Item(){ Volume=2, Value=5},
-                                        new Item(){ Volume=3, Value=6},
-                                        new Item(){ Volume=4, Value=7},
-                                        new Item(){ Volume=5, Value=8},
-                                        new Item(){ Volume=9, Value=8},
-                                        new Item(){ Volume=8, Value=8},
-                                        new Item(){ Volume=7, Value=7},
-                                        new Item(){ Volume=6, Value=6},
-                                        new Item(){ Volume=5, Value=5},
-                                        new Item(){ Volume=4, Value=4},
-                                        new Item(){ Volume=3, Value=5},
-                                        new Item(){ Volume=7, Value=6},
-                                        new Item(){ Volume=8, Value=7},
-                                        new Item(){ Volume=9, Value=8}
-                                    };*/
-
                                     int volume = 100;
                                     List<Item> lstItems = new List<Item>();
                                     Random rnd = new Random(1);
@@ -236,13 +202,95 @@ namespace Borut.Lectures.AlgorithmsRST
                             case Dynamic.Algorithm.ShuffleString:
                                 {
                                     //string a = "borut", b = "lužar", c = "blouržuatr";
-                                    string a = "1234", b = "test", c = "t123e4st";
-                                    //string a = "abababababaababababababa", b = "ababaababababababacababaaba", c = "ababaabababababababababaababaababababacaabababababa";
-                                    //string a = "abababababaababababababaabababababaababababababa", b = "abababababaababababababaababaababababababacababaaba", c = "abababababaababababababaabababababaababababababaababaabababababababababaababaababababacaabababababa";
+                                    //string a = "1234", b = "test", c = "t123e4st";
+                                    string a = "abababababaababababababa", b = "ababaababababababacababaaba", c = "ababaabababababababababaababaababababacaabababababa";
+
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    //bool result = Dynamic.ShuffleStringRec(a, b, c, a.Length - 1, b.Length - 1);
-                                    bool result = Dynamic.ShuffleStringDyn(a, b, c);
+                                    bool result = Dynamic.ShuffleStringRec(a, b, c, a.Length - 1, b.Length - 1);
                                     Console.WriteLine($"String \"{c}\" is{(result ? "" : " NOT")} a shuffle of \"{a}\" and \"{b}\".");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                    sw = Stopwatch.StartNew();
+                                    bool result2 = Dynamic.ShuffleStringDyn(a, b, c);
+                                    Console.WriteLine($"String \"{c}\" is{(result2 ? "" : " NOT")} a shuffle of \"{a}\" and \"{b}\".");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
+                            case Dynamic.Algorithm.VankinsMile:
+                                {
+                                    int[,] matrix = new int[,]
+                                        {
+                                            { 1, 3, -2, 3 },
+                                            { 2, 6, -2, 1 },
+                                            {-1,-2,  1, -2 }
+                                        };
+
+                                    //int[,] matrix = TestCasesGenerator.Generate2DMatrix(1000, 1000, 0, 10, 5);
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    /*int result = Dynamic.VankinsMileRec(matrix, 0, 0);
+                                    Console.WriteLine($"RECURSIVE: The optimal path has value {result}.");*/
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                    sw = Stopwatch.StartNew();
+                                    int result2 = Dynamic.VankinsMileDyn(matrix, 0, 0, new Dictionary<(int X, int Y), int>());
+                                    Console.WriteLine($"DYNAMIC: The optimal path has value {result2}.");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
+                            case Dynamic.Algorithm.MaxSolidSquareBlock:
+                                {
+                                    /*int[,] matrix = new int[,]
+                                        {
+                                            { 0, 0, 0 },
+                                            { 0, 0, 0 },
+                                            { 0, 0, 0 },
+                                        };*/
+
+                                    int[,] matrix = TestCasesGenerator.Generate2DMatrix(10000, 10000, 0, 1, 10);
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    //int result = Dynamic.MaxHomogeneSquareBlockRec(matrix);
+                                    int result = Dynamic.MaxHomogeneSquareBlockDyn(matrix);
+                                    Console.WriteLine($"RECURSIVE: Maximum solid block has area {result}.");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                    sw = Stopwatch.StartNew();
+                                    //Dynamic.PrintMaxSubSquare(matrix);
+
+                                    //Console.WriteLine($"DYNAMIC: Maximum solid block has area {result2} vs {result2}.");
+                                    //Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
+                            case Dynamic.Algorithm.MaxSolidBlock:
+                                {
+                                    /*int[,] matrix = new int[,]
+                                        {
+                                            { 1, 1, 0 },
+                                            { 1, 0, 1 },
+                                            { 1, 1, 1 },
+                                            { 0, 0, 1 },
+                                            { 0, 0, 1 },
+                                            { 0, 0, 1 },
+                                            { 1, 0, 0 }
+                                        };*/
+
+                                    int[,] matrix = TestCasesGenerator.Generate2DMatrix(10000, 10000, 0, 1, 5);
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    /*int result = Dynamic.VankinsMileRec(matrix, 0, 0);
+                                    Console.WriteLine($"RECURSIVE: The optimal path has value {result}.");*/
+                                    //Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                    sw = Stopwatch.StartNew();
+                                    //int result2 = Dynamic.MaxHomogeneBlockRec(matrix);
+                                    //Dynamic.PrintMaxSubSquare(matrix);
+
+                                    int[] histo = new int[] { 1,2,2,0,3,2,2 };
+                                    int hist = Dynamic.MaxRectangleInHistogram(histo);
+                                    //Console.WriteLine($"DYNAMIC: Hist area: {hist}.");
+
+                                    int result3 = Dynamic.MaxHomogeneBlock(matrix);
+                                    Console.WriteLine($"DYNAMIC: Maximum solid block has area {result3}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
                                 }
                                 break;
