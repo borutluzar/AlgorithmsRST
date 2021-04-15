@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Borut.Lectures.AlgorithmsRST
 {
     /// <summary>
-    /// In this class we collect algorithms using greedy approach.
+    /// In this class we collect algorithms using dynamic programming.
     /// </summary>
     public static class Dynamic
     {
@@ -16,6 +16,7 @@ namespace Borut.Lectures.AlgorithmsRST
             FibonacciRec,
             FibonacciList,
             FibonacciDirect,
+            IsomorphicTrees,
             KnapsackRec,
             KnapsackRecVec,
             KnapsackDyn,
@@ -328,6 +329,58 @@ namespace Borut.Lectures.AlgorithmsRST
             dicStore.Add((X: indX, Y: indY), max);
 
             return max;
+        }
+
+
+        /// <summary>
+        /// Computes the maximum subtree which can be found in both given trees.
+        /// </summary>
+        public static (int MaxNodes, string Signature) MaxIsomorphicSubtree(BinaryTree treeA, BinaryTree treeB)
+        {
+            // For each tree make a list of subtrees, defined by signatures
+            HashSet<string> hsSubsA = new HashSet<string>();
+            HashSet<string> hsSubsB = new HashSet<string>();
+
+            // Traverse both trees recursively
+            TraverseNodesForSubtrees(treeA.Root, ref hsSubsA);
+            TraverseNodesForSubtrees(treeB.Root, ref hsSubsB);
+
+            // Compare the sets for the max signature
+            int maxNodes = 0;
+            string maxSign = "";
+            foreach (var sign in hsSubsA)
+            {
+                if (hsSubsB.Contains(sign) && sign.Length > maxNodes)
+                {
+                    maxNodes = sign.Length;
+                    maxSign = sign;
+                }
+            }
+            return (MaxNodes: maxNodes + 1, Signature: "R" + maxSign); // +1 to count the root node
+        }
+
+        private static string TraverseNodesForSubtrees(BinaryNode root, ref HashSet<string> hsSubs)
+        {
+            StringBuilder signature = new StringBuilder();
+
+            // Get signature of left son
+            if (root.LeftSon != null)
+            {
+                signature.Append("L");
+                signature.Append(TraverseNodesForSubtrees(root.LeftSon, ref hsSubs));
+            }
+
+            // Get signature of right son
+            if (root.RightSon != null)
+            {
+                signature.Append("D");
+                signature.Append(TraverseNodesForSubtrees(root.RightSon, ref hsSubs));
+            }
+
+            string strSign = signature.ToString();
+            hsSubs.Add(strSign);
+
+            return strSign;
         }
 
 

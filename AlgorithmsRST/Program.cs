@@ -8,7 +8,7 @@ namespace Borut.Lectures.AlgorithmsRST
     {
         static void Main(string[] args)
         {
-            Chapter chTests = Chapter.DynamicProgramming;
+            Chapter chTests = Chapter.Backtracking;
 
             switch (chTests)
             {
@@ -237,6 +237,18 @@ namespace Borut.Lectures.AlgorithmsRST
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
                                 }
                                 break;
+                            case Dynamic.Algorithm.IsomorphicTrees:
+                                {
+                                    BinaryTree treeA = TestCasesGenerator.GenerateRandomBinaryTree(500, 0);
+                                    BinaryTree treeB = TestCasesGenerator.GenerateRandomBinaryTree(500, 1);
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    (int maxSubtreeNodes, string maxSign) = Dynamic.MaxIsomorphicSubtree(treeA, treeB);
+                                    Console.WriteLine($"The maximum subtree has {maxSubtreeNodes} nodes.");
+                                    Console.WriteLine($"The maximum subtree has signature {maxSign}.");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
                             case Dynamic.Algorithm.MaxSolidSquareBlock:
                                 {
                                     /*int[,] matrix = new int[,]
@@ -285,13 +297,74 @@ namespace Borut.Lectures.AlgorithmsRST
                                     //int result2 = Dynamic.MaxHomogeneBlockRec(matrix);
                                     //Dynamic.PrintMaxSubSquare(matrix);
 
-                                    int[] histo = new int[] { 1,2,2,0,3,2,2 };
+                                    int[] histo = new int[] { 1, 2, 2, 0, 3, 2, 2 };
                                     int hist = Dynamic.MaxRectangleInHistogram(histo);
                                     //Console.WriteLine($"DYNAMIC: Hist area: {hist}.");
 
                                     int result3 = Dynamic.MaxHomogeneBlock(matrix);
                                     Console.WriteLine($"DYNAMIC: Maximum solid block has area {result3}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
+                        }
+                    }
+                    break;
+                case Chapter.Backtracking:
+                    {
+                        Console.WriteLine("Testing backtracking");
+                        Backtracking.Algorithm algType = Backtracking.Algorithm.SumFactorization;
+
+                        switch (algType)
+                        {
+                            case Backtracking.Algorithm.NQueens:
+                                {
+                                    int n = 15;
+                                    Stopwatch sw;
+                                    for (int i = 1; i <= n; i++)
+                                    {
+                                        sw = Stopwatch.StartNew();
+                                        int numPositions = Backtracking.NQueens(i, new List<int>());
+                                        Console.WriteLine($"Number of solutions for {i} queens is {numPositions}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                    }
+                                }
+                                break;
+                            case Backtracking.Algorithm.SumFactorization:
+                                {
+                                    //int n = 10;
+                                    //List<int> lstCandidates = new List<int>() { 3, 4, 5 };
+
+                                    for (int i = 0; i < 1; i++)
+                                    {
+                                        int n = 50_000_000;
+                                        List<int> lstCandidates = TestCasesGenerator.GenerateRandomListOfIntegers(3_000, 1, 100_000, true, i);
+
+
+                                        Stopwatch sw = Stopwatch.StartNew();
+                                        (bool hasSum, List<int> lstSumands) = Backtracking.SumFactorization(n, lstCandidates);
+                                        //bool hasSumRec = Backtracking.SumFactorizationRec(n, lstCandidates, lstCandidates.Count);
+
+                                        //if (hasSum != hasSumRec) throw new Exception();
+                                            //Console.WriteLine($"NAPAKA!!");
+
+                                        if (hasSum)
+                                            Console.WriteLine($"The number {n} IS sum of numbers {lstSumands.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                        else
+                                            Console.WriteLine($"The number {n} IS NOT sum of any given numbers! \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                    }
+                                }
+                                break;
+                            case Backtracking.Algorithm.Exercise1:
+                                {
+                                    int n = 30;
+                                    Stopwatch sw;
+
+                                    sw = Stopwatch.StartNew();
+                                    var position = Backtracking.NQueensOnePosition(n, new List<int>());
+                                    if (position.Count == n)
+                                        Console.WriteLine($"A solution for {n} queens is {position.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                    else
+                                        Console.WriteLine($"A solution for {n} queens does not exist. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+
                                 }
                                 break;
                         }

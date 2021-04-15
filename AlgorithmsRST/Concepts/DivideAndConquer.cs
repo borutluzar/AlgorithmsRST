@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Borut.Lectures.AlgorithmsRST
 {
     /// <summary>
-    /// In this class we collect algorithms using greedy approach.
+    /// In this class we collect algorithms using divide and conquer.
     /// </summary>
     public static class DivideAndConquer
     {

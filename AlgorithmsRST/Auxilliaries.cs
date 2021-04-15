@@ -55,6 +55,37 @@ namespace Borut.Lectures.AlgorithmsRST
         public int Area { get => this.LengthX * this.LengthY; }
     }
 
+    public class BinaryTree
+    {
+        public BinaryNode Root { get; set; }
+
+        public int CountNodes()
+        {
+            int numnNodes = 0;
+            if (this.Root != null)
+            {
+                Queue<BinaryNode> qNodes = new Queue<BinaryNode>();
+                qNodes.Enqueue(this.Root);
+                while (qNodes.Count > 0)
+                {
+                    numnNodes++;
+                    var node = qNodes.Dequeue();
+                    if (node.LeftSon != null) qNodes.Enqueue(node.LeftSon);
+                    if (node.RightSon != null) qNodes.Enqueue(node.RightSon);
+                }
+            }
+            return numnNodes;
+        }
+    }
+
+    public class BinaryNode
+    {
+        public object Value { get; set; }
+
+        public BinaryNode LeftSon { get; set; }
+
+        public BinaryNode RightSon { get; set; }
+    }
 
 
     public static class TestCasesGenerator
@@ -72,6 +103,47 @@ namespace Borut.Lectures.AlgorithmsRST
                     matrix[i, j] = rnd.Next(rndMin, rndMax + 1);
 
             return matrix;
+        }
+
+        public static BinaryTree GenerateRandomBinaryTree(int numNodes, int? seed = null)
+        {
+            BinaryTree tree = new BinaryTree() { Root = new BinaryNode() };
+            Random rnd = seed == null ? new Random() : new Random(seed.Value);
+            BinaryNode currentNode = tree.Root;
+            List<BinaryNode> lstNodes = new List<BinaryNode>() { currentNode };
+
+            while (lstNodes.Count < numNodes)
+            {
+                currentNode = lstNodes[rnd.Next(0, lstNodes.Count)];
+                int addNode = rnd.Next(0, 2);
+                if (addNode == 0 && currentNode.LeftSon == null)
+                {
+                    currentNode.LeftSon = new BinaryNode();
+                    lstNodes.Add(currentNode.LeftSon);
+                }
+                else if (addNode == 1 && currentNode.RightSon == null)
+                {
+                    currentNode.RightSon = new BinaryNode();
+                    lstNodes.Add(currentNode.RightSon);
+                }
+            }
+            return tree;
+        }
+
+        public static List<int> GenerateRandomListOfIntegers(int numNumbers, int min, int max, bool distinct, int? seed = null)
+        {
+            HashSet<int> lstNums = new HashSet<int>();
+            Random rnd = seed == null ? new Random() : new Random(seed.Value);
+
+            while (lstNums.Count < numNumbers)
+            {
+                int num = rnd.Next(min, max + 1);
+
+                if (distinct && !lstNums.Contains(num) || !distinct)
+                    lstNums.Add(num);
+            }
+
+            return lstNums.ToList();
         }
     }
 
@@ -99,6 +171,37 @@ namespace Borut.Lectures.AlgorithmsRST
                     if (array is int[])
                     {
                         var arrD = array as int[];
+                        sb.Append(arrD[i]);
+                    }
+                }
+            }
+            sb.Append(")");
+
+            return sb.ToString();
+        }
+
+        public static string ToString<T>(this List<T> lst, int round = -1)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("(");
+            for (int i = 0; i < lst.Count; i++)
+            {
+                if (i > 0)
+                    sb.Append(", ");
+
+                if (round < 0)
+                    sb.Append(lst[i]);
+                else
+                {
+                    if (lst is double[])
+                    {
+                        var arrD = lst as double[];
+                        sb.Append(Math.Round(arrD[i], round, MidpointRounding.AwayFromZero));
+                    }
+                    if (lst is int[])
+                    {
+                        var arrD = lst as int[];
                         sb.Append(arrD[i]);
                     }
                 }
