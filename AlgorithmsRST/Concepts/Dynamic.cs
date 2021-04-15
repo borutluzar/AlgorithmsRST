@@ -352,7 +352,7 @@ namespace Borut.Lectures.AlgorithmsRST
             {
                 if (hsSubsB.Contains(sign) && sign.Length > maxNodes)
                 {
-                    maxNodes = sign.Length;
+                    maxNodes = sign.Replace("(", "").Replace(")", "").Length;
                     maxSign = sign;
                 }
             }
@@ -366,15 +366,19 @@ namespace Borut.Lectures.AlgorithmsRST
             // Get signature of left son
             if (root.LeftSon != null)
             {
+                signature.Append("(");
                 signature.Append("L");
                 signature.Append(TraverseNodesForSubtrees(root.LeftSon, ref hsSubs));
-            }
+                signature.Append(")");
+            }            
 
             // Get signature of right son
             if (root.RightSon != null)
             {
+                signature.Append("(");
                 signature.Append("D");
                 signature.Append(TraverseNodesForSubtrees(root.RightSon, ref hsSubs));
+                signature.Append(")");
             }
 
             string strSign = signature.ToString();

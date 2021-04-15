@@ -104,7 +104,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.DynamicProgramming:
                     {
                         Console.WriteLine("Testing dynamic programming");
-                        Dynamic.Algorithm algType = Dynamic.Algorithm.MaxSolidBlock;
+                        Dynamic.Algorithm algType = Dynamic.Algorithm.IsomorphicTrees;
 
                         switch (algType)
                         {
@@ -242,6 +242,38 @@ namespace Borut.Lectures.AlgorithmsRST
                                     BinaryTree treeA = TestCasesGenerator.GenerateRandomBinaryTree(500, 0);
                                     BinaryTree treeB = TestCasesGenerator.GenerateRandomBinaryTree(500, 1);
 
+                                    /*BinaryNode rootA = new BinaryNode()
+                                    {
+                                        LeftSon = new BinaryNode(),
+                                        RightSon = new BinaryNode()
+                                        {
+                                            LeftSon = new BinaryNode()
+                                            {
+                                                LeftSon = new BinaryNode(),
+                                                RightSon = new BinaryNode()
+                                            },
+                                            RightSon = new BinaryNode()
+                                        }
+                                    };
+                                    BinaryTree treeA = new BinaryTree() { Root = rootA};
+
+                                    BinaryNode rootB = new BinaryNode()
+                                    {
+                                        LeftSon = new BinaryNode()
+                                        {
+                                            RightSon = new BinaryNode()
+                                        },
+                                        RightSon = new BinaryNode()
+                                        {
+                                            LeftSon = new BinaryNode(),
+                                            RightSon = new BinaryNode()
+                                            {
+                                                LeftSon = new BinaryNode()
+                                            }
+                                        }
+                                    };
+                                    BinaryTree treeB = new BinaryTree() { Root = rootB };*/
+
                                     Stopwatch sw = Stopwatch.StartNew();
                                     (int maxSubtreeNodes, string maxSign) = Dynamic.MaxIsomorphicSubtree(treeA, treeB);
                                     Console.WriteLine($"The maximum subtree has {maxSubtreeNodes} nodes.");
@@ -312,15 +344,15 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.Backtracking:
                     {
                         Console.WriteLine("Testing backtracking");
-                        Backtracking.Algorithm algType = Backtracking.Algorithm.SubsetSum;
+                        Backtracking.Algorithm algType = Backtracking.Algorithm.Exercise1;
 
                         switch (algType)
                         {
                             case Backtracking.Algorithm.NQueens:
                                 {
-                                    int n = 15;
+                                    int n = 4;
                                     Stopwatch sw;
-                                    for (int i = 1; i <= n; i++)
+                                    for (int i = 4; i <= n; i++)
                                     {
                                         sw = Stopwatch.StartNew();
                                         int numPositions = Backtracking.NQueens(i, new List<int>());
@@ -347,8 +379,8 @@ namespace Borut.Lectures.AlgorithmsRST
                                 {
                                     for (int i = 0; i < 1; i++)
                                     {
-                                        int n = 50_000_000;
-                                        List<int> lstCandidates = TestCasesGenerator.GenerateRandomListOfIntegers(3_000, 1, 100_000, true, i);
+                                        int n = 500_000;
+                                        List<int> lstCandidates = TestCasesGenerator.GenerateRandomListOfIntegers(400_000, 1, 800_000, true, i);
 
 
                                         Stopwatch sw = Stopwatch.StartNew();
@@ -364,7 +396,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Backtracking.Algorithm.Exercise1:
                                 {
-                                    int n = 30;
+                                    int n = 40;
                                     Stopwatch sw;
 
                                     sw = Stopwatch.StartNew();

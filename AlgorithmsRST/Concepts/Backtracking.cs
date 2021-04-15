@@ -60,7 +60,6 @@ namespace Borut.Lectures.AlgorithmsRST
                         position = NQueensOnePosition(n, new List<int>(solution) { i });
                         if (position.Count == n)
                             return position;
-                        //break; // Not to search for further solutions
                     }
                 }
             }
@@ -201,6 +200,20 @@ namespace Borut.Lectures.AlgorithmsRST
         /// https://docs.microsoft.com/en-us/dotnet/api/system.stackoverflowexception?view=net-5.0
         /// </summary>
         public static bool SubsetSumRec(int n, List<int> lstCandidates, int i)
+        {
+            if (n == 0)
+                return true;
+            else if (n < 0 || i == 0)
+                return false;
+            else
+            {
+                return SubsetSumRec(n - lstCandidates[i - 1], lstCandidates, i - 1)
+                            ||
+                       SubsetSumRec(n, lstCandidates, i - 1);
+            }
+        }
+
+        public static bool SubsetSumRecWithSolution(int n, List<int> lstCandidates, int i)
         {
             if (n == 0)
                 return true;
