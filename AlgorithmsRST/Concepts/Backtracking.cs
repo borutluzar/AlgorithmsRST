@@ -16,7 +16,7 @@ namespace Borut.Lectures.AlgorithmsRST
             NQueens,
             Exercise1,
             Knapsack,
-            SumFactorization
+            SubsetSum
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Borut.Lectures.AlgorithmsRST
         /// the function determines if n can be written as a sum of 
         /// some subset of the given numbers.        
         /// </summary>
-        public static (bool Exists, List<int> Sumands) SumFactorization(int n, List<int> lstCandidates)
+        public static (bool Exists, List<int> Sumands) SubsetSum(int n, List<int> lstCandidates)
         {
             // First, order candidates
             List<int> lstCandidatesCopy = new List<int>(lstCandidates);
@@ -120,7 +120,7 @@ namespace Borut.Lectures.AlgorithmsRST
             if (totalSum < n)
                 throw new ArithmeticException($"The candidates do not sum up to {n}!");
 
-            int[] vecSumands = SumFactorizationInternal(n, lstCandidatesCopy);
+            int[] vecSumands = SubsetSumInternal(n, lstCandidatesCopy);
 
             List<int> lstSumands = new List<int>();
             for (int i = 0; i < vecSumands.Length; i++)
@@ -129,10 +129,9 @@ namespace Borut.Lectures.AlgorithmsRST
         }
 
         /// <summary>
-        /// Internal method for handling sum factorization.
-        /// Note! Candidates must be ordered in ascending order.
+        /// Internal method for handling sum factorization - using loop not recursive calls!
         /// </summary>
-        private static int[] SumFactorizationInternal(int n, List<int> lstCandidates)
+        private static int[] SubsetSumInternal(int n, List<int> lstCandidates)
         {
             // Avoid handling this case in the loop
             if (lstCandidates.Count == 1)
@@ -208,7 +207,7 @@ namespace Borut.Lectures.AlgorithmsRST
         /// Recursion is fast, but we quickly obtain StackOverflowException (having list of 100 000 candidates).
         /// https://docs.microsoft.com/en-us/dotnet/api/system.stackoverflowexception?view=net-5.0
         /// </summary>
-        public static bool SumFactorizationRec(int n, List<int> lstCandidates, int i)
+        public static bool SubsetSumRec(int n, List<int> lstCandidates, int i)
         {
             if (n == 0)
                 return true;
@@ -216,9 +215,9 @@ namespace Borut.Lectures.AlgorithmsRST
                 return false;
             else
             {
-                return SumFactorizationRec(n - lstCandidates[i - 1], lstCandidates, i - 1)
+                return SubsetSumRec(n - lstCandidates[i - 1], lstCandidates, i - 1)
                             ||
-                       SumFactorizationRec(n, lstCandidates, i - 1);
+                       SubsetSumRec(n, lstCandidates, i - 1);
             }
         }
     }

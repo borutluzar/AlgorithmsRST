@@ -312,7 +312,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.Backtracking:
                     {
                         Console.WriteLine("Testing backtracking");
-                        Backtracking.Algorithm algType = Backtracking.Algorithm.SumFactorization;
+                        Backtracking.Algorithm algType = Backtracking.Algorithm.SubsetSum;
 
                         switch (algType)
                         {
@@ -328,7 +328,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                     }
                                 }
                                 break;
-                            case Backtracking.Algorithm.SumFactorization:
+                            case Backtracking.Algorithm.SubsetSum:
                                 {
                                     //int n = 10;
                                     //List<int> lstCandidates = new List<int>() { 3, 4, 5 };
@@ -340,8 +340,8 @@ namespace Borut.Lectures.AlgorithmsRST
 
 
                                         Stopwatch sw = Stopwatch.StartNew();
-                                        (bool hasSum, List<int> lstSumands) = Backtracking.SumFactorization(n, lstCandidates);
-                                        //bool hasSumRec = Backtracking.SumFactorizationRec(n, lstCandidates, lstCandidates.Count);
+                                        (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
+                                        //bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
 
                                         //if (hasSum != hasSumRec) throw new Exception();
                                             //Console.WriteLine($"NAPAKA!!");
