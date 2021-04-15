@@ -34,7 +34,7 @@ namespace Borut.Lectures.AlgorithmsRST
 
             // Otherwise try to place k-th queen in the row
             int k = solution.Count;
-            for (int i = 0; i < n; i++) // Column
+            for (int i = 0; i < n; i++)
             {
                 if (solution.Count == 0)
                 {
@@ -45,7 +45,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 else
                 {
                     bool canPlace = true;
-                    for (int j = 0; j < k; j++) // Row
+                    for (int j = 0; j < k; j++)
                     {
                         if (solution[k - j - 1] == i || solution[k - j - 1] == i - j - 1 || solution[k - j - 1] == i + (j + 1))
                         {
@@ -81,14 +81,14 @@ namespace Borut.Lectures.AlgorithmsRST
 
             // Otherwise try to place k-th queen in the row
             int k = solution.Count;
-            for (int i = 0; i < n; i++) // Column
+            for (int i = 0; i < n; i++)
             {
                 if (solution.Count == 0)
                     numPossibilities += NQueens(n, new List<int>(solution) { i });
                 else
                 {
                     bool canPlace = true;
-                    for (int j = 0; j < k; j++) // Row
+                    for (int j = 0; j < k; j++)
                     {
                         if (solution[k - j - 1] == i || solution[k - j - 1] == i - j - 1 || solution[k - j - 1] == i + (j + 1))
                         {

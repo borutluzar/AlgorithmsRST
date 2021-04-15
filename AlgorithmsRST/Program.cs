@@ -312,7 +312,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.Backtracking:
                     {
                         Console.WriteLine("Testing backtracking");
-                        Backtracking.Algorithm algType = Backtracking.Algorithm.SubsetSum;
+                        Backtracking.Algorithm algType = Backtracking.Algorithm.NQueens;
 
                         switch (algType)
                         {
