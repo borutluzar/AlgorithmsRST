@@ -16,7 +16,8 @@ namespace Borut.Lectures.AlgorithmsRST
             NQueens,
             Exercise1,
             Knapsack,
-            SubsetSum
+            SubsetSum,
+            SubsetSumLargeScale
         }
 
         /// <summary>
@@ -133,14 +134,6 @@ namespace Borut.Lectures.AlgorithmsRST
         /// </summary>
         private static int[] SubsetSumInternal(int n, List<int> lstCandidates)
         {
-            // Avoid handling this case in the loop
-            if (lstCandidates.Count == 1)
-            {
-                if (lstCandidates[0] == n)
-                    return new int[] { 1 };
-                else return new int[] { 0 };
-            }
-
             int[] vecSumands = new int[lstCandidates.Count];
             Dictionary<int, List<int>> dicTriedValues = new Dictionary<int, List<int>>();
             for (int i = 0; i < lstCandidates.Count; i++) dicTriedValues.Add(i, new List<int>());

@@ -312,7 +312,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.Backtracking:
                     {
                         Console.WriteLine("Testing backtracking");
-                        Backtracking.Algorithm algType = Backtracking.Algorithm.NQueens;
+                        Backtracking.Algorithm algType = Backtracking.Algorithm.SubsetSum;
 
                         switch (algType)
                         {
@@ -330,9 +330,21 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Backtracking.Algorithm.SubsetSum:
                                 {
-                                    //int n = 10;
-                                    //List<int> lstCandidates = new List<int>() { 3, 4, 5 };
+                                    int n = 8;
+                                    List<int> lstCandidates = new List<int>() { 3, 4, 5 };
 
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
+                                    //bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
+
+                                    if (hasSum)
+                                        Console.WriteLine($"The number {n} IS sum of numbers {lstSumands.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                    else
+                                        Console.WriteLine($"The number {n} IS NOT sum of any given numbers! \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                }
+                                break;
+                            case Backtracking.Algorithm.SubsetSumLargeScale:
+                                {
                                     for (int i = 0; i < 1; i++)
                                     {
                                         int n = 50_000_000;
@@ -342,9 +354,6 @@ namespace Borut.Lectures.AlgorithmsRST
                                         Stopwatch sw = Stopwatch.StartNew();
                                         (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
                                         //bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
-
-                                        //if (hasSum != hasSumRec) throw new Exception();
-                                            //Console.WriteLine($"NAPAKA!!");
 
                                         if (hasSum)
                                             Console.WriteLine($"The number {n} IS sum of numbers {lstSumands.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
