@@ -80,11 +80,69 @@ namespace Borut.Lectures.AlgorithmsRST
 
     public class BinaryNode
     {
+        public BinaryNode() : this(null) { }
+
+        public BinaryNode(object value)
+        {
+            this.Value = value;
+        }
+
         public object Value { get; set; }
 
         public BinaryNode LeftSon { get; set; }
 
         public BinaryNode RightSon { get; set; }
+    }
+
+    public class Graph
+    {
+        public Graph(HashSet<int> verts) : this(verts, new HashSet<Edge>()) { }
+
+        public Graph(HashSet<int> verts, HashSet<Edge> edges)
+        {
+            this.Vertices = verts;
+            this.Edges = edges;
+            this.Neighbors = new Dictionary<int, HashSet<int>>();
+
+            foreach (var v in this.Vertices)
+                this.Neighbors.Add(v, new HashSet<int>());
+        }
+
+        public HashSet<int> Vertices { get; }
+
+        public HashSet<Edge> Edges { get; }
+
+        public Dictionary<int, HashSet<int>> Neighbors { get; }
+
+        public void AddEdge(int v1, int v2)
+        {
+            if (this.Vertices.Contains(v1) && this.Vertices.Contains(v2))
+            {
+                this.Edges.Add(new Edge(v1, v2));
+                this.Neighbors[v1].Add(v2);
+                this.Neighbors[v2].Add(v1);
+            }
+            else
+                throw new Exception("No such vertices in graph!");
+        }
+    }
+
+    public struct Edge
+    {
+        public Edge(int v1, int v2)
+        {
+            this.Start = Math.Min(v1, v2);
+            this.End = Math.Max(v1, v2);
+        }
+
+        public int Start { get; }
+
+        public int End { get; }
+
+        public override string ToString()
+        {
+            return $"({Start}, {End})";
+        }
     }
 
 
@@ -105,7 +163,14 @@ namespace Borut.Lectures.AlgorithmsRST
             return matrix;
         }
 
-        public static BinaryTree GenerateRandomBinaryTree(int numNodes, int? seed = null)
+        /// <summary>
+        /// Generates a random binary tree with the given number of nodes.
+        /// </summary>
+        /// <param name="numNodes">Number of nodes in the tree</param>
+        /// <param name="maxValue">Maximum node value (randomly selected between 0 and maxValue). If maxValue = 0, then null is set</param>
+        /// <param name="seed">Seed for random generator</param>
+        /// <returns>The generated tree.</returns>
+        public static BinaryTree GenerateRandomBinaryTree(int numNodes, int maxValue = 0, int? seed = null)
         {
             BinaryTree tree = new BinaryTree() { Root = new BinaryNode() };
             Random rnd = seed == null ? new Random() : new Random(seed.Value);
@@ -116,14 +181,16 @@ namespace Borut.Lectures.AlgorithmsRST
             {
                 currentNode = lstNodes[rnd.Next(0, lstNodes.Count)];
                 int addNode = rnd.Next(0, 2);
+                int nodeValue = rnd.Next(0, maxValue + 1);
+
                 if (addNode == 0 && currentNode.LeftSon == null)
                 {
-                    currentNode.LeftSon = new BinaryNode();
+                    currentNode.LeftSon = new BinaryNode(maxValue == 0 ? null : nodeValue);
                     lstNodes.Add(currentNode.LeftSon);
                 }
                 else if (addNode == 1 && currentNode.RightSon == null)
                 {
-                    currentNode.RightSon = new BinaryNode();
+                    currentNode.RightSon = new BinaryNode(maxValue == 0 ? null : nodeValue);
                     lstNodes.Add(currentNode.RightSon);
                 }
             }
@@ -144,6 +211,31 @@ namespace Borut.Lectures.AlgorithmsRST
             }
 
             return lstNums.ToList();
+        }
+
+        /// <summary>
+        /// Generates a graph with a given number of vertices and edges.
+        /// </summary>
+        public static Graph GenerateRandomGraph(int numVertices, int numEdges, int? seed = null)
+        {
+            if (numEdges > (numVertices * (numVertices - 1)) / 2)
+                throw new Exception("Too many edges!");
+
+            Random rnd = seed == null ? new Random() : new Random(seed.Value);
+
+            Graph g = new Graph(Enumerable.Range(1, numVertices).ToHashSet());
+            int edgCount = 0;
+            while (edgCount < numEdges)
+            {
+                int v1 = rnd.Next(1, numVertices + 1);
+                int v2 = rnd.Next(1, numVertices + 1);
+                if (v1 != v2 && !g.Neighbors[v1].Contains(v2))
+                {
+                    g.AddEdge(v1, v2);
+                    edgCount++;
+                }
+            }
+            return g;
         }
     }
 

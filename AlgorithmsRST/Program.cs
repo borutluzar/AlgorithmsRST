@@ -8,7 +8,7 @@ namespace Borut.Lectures.AlgorithmsRST
     {
         static void Main(string[] args)
         {
-            Chapter chTests = Chapter.Backtracking;
+            Chapter chTests = Chapter.BranchAndBound;
 
             switch (chTests)
             {
@@ -239,8 +239,8 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Dynamic.Algorithm.IsomorphicTrees:
                                 {
-                                    BinaryTree treeA = TestCasesGenerator.GenerateRandomBinaryTree(500, 0);
-                                    BinaryTree treeB = TestCasesGenerator.GenerateRandomBinaryTree(500, 1);
+                                    BinaryTree treeA = TestCasesGenerator.GenerateRandomBinaryTree(500, 0, 0);
+                                    BinaryTree treeB = TestCasesGenerator.GenerateRandomBinaryTree(500, 0, 1);
 
                                     /*BinaryNode rootA = new BinaryNode()
                                     {
@@ -344,7 +344,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.Backtracking:
                     {
                         Console.WriteLine("Testing backtracking");
-                        Backtracking.Algorithm algType = Backtracking.Algorithm.Exercise1;
+                        Backtracking.Algorithm algType = Backtracking.Algorithm.Knapsack;
 
                         switch (algType)
                         {
@@ -405,6 +405,84 @@ namespace Borut.Lectures.AlgorithmsRST
                                         Console.WriteLine($"A solution for {n} queens is {position.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
                                     else
                                         Console.WriteLine($"A solution for {n} queens does not exist. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+
+                                }
+                                break;
+                            case Backtracking.Algorithm.Knapsack:
+                                {
+                                    /*int volume = 9;
+                                    List<Item> lstItems = new List<Item>()
+                                    {
+                                        new Item(){ Volume=2, Value=3},
+                                        new Item(){ Volume=4, Value=5},
+                                        new Item(){ Volume=4, Value=7},
+                                        new Item(){ Volume=6, Value=8}
+                                    };*/
+
+                                    for (int k = 50; k <= 70; k++)
+                                    {
+                                        int volume = 100;
+                                        List<Item> lstItems = new List<Item>();
+                                        Random rnd = new Random(k);
+                                        //int k = 20; // For n=120, we need 23 seconds for recursive backtracking
+                                        for (int i = 0; i < k; i++)
+                                        {
+                                            lstItems.Add(new Item() { Volume = rnd.Next(10, 40), Value = rnd.Next(5, 10) });
+                                        }
+
+                                        Stopwatch sw = Stopwatch.StartNew();
+                                        int resultDyn = Dynamic.KnapsackProblemDyn(volume, lstItems, lstItems.Count - 1, new Dictionary<(int, int), int>());
+                                        Console.WriteLine($"DYNAMIC: The maximum value of the knapsack is {resultDyn}.");
+                                        Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                        sw = Stopwatch.StartNew();
+                                        int resultBackRec = Backtracking.KnapsackProblemRec(volume, lstItems, lstItems.Count);
+                                        Console.WriteLine($"Recursive: The maximum value of the knapsack is {resultBackRec}.");
+                                        Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                        sw = Stopwatch.StartNew();
+                                        //int resultBack = Backtracking.KnapsackProblemNonRec(volume, lstItems);
+                                        //Console.WriteLine($"Backtracking: The maximum value of the knapsack is {resultBack}.");
+                                        Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                        sw = Stopwatch.StartNew();
+                                        int resultBackOpt = Backtracking.KnapsackProblem(volume, lstItems);
+                                        Console.WriteLine($"Backtracking: The maximum value of the knapsack is {resultBackOpt}.");
+                                        Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                        if (resultBackOpt != resultBackRec || resultBackOpt != resultDyn)
+                                        {
+
+                                        }
+
+                                        /*sw = Stopwatch.StartNew();
+                                        result = Dynamic.KnapsackProblemRec(volume, lstItems, lstItems.Count - 1);
+                                        Console.WriteLine($"RECURSIVE: The maximum value of the knapsack is {result}.");                                    
+                                        Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");*/
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                    break;
+                case Chapter.BranchAndBound:
+                    {
+                        Console.WriteLine("Testing branch and bound");
+                        BranchAndBound.Algorithm algType = BranchAndBound.Algorithm.General;
+
+                        switch (algType)
+                        {
+                            case BranchAndBound.Algorithm.General:
+                                {
+                                    int n = 50;
+                                    int m = 100;
+                                    Graph g = TestCasesGenerator.GenerateRandomGraph(n, m, 0);
+
+                                    Stopwatch sw;
+
+                                    sw = Stopwatch.StartNew();
+                                    //int numPositions = BranchAndBound.NQueens(i, new List<int>());
+                                    //Console.WriteLine($"Number of solutions for {i} queens is {numPositions}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
 
                                 }
                                 break;

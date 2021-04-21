@@ -184,7 +184,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 {
                     if (i == 0) return vecSumands;
 
-                    dicTriedValues[i].Clear();                    
+                    dicTriedValues[i].Clear();
                     i -= 2;
                     continue;
                 }
@@ -213,6 +213,9 @@ namespace Borut.Lectures.AlgorithmsRST
             }
         }
 
+        /// <summary>
+        /// TODO.
+        /// </summary>
         public static bool SubsetSumRecWithSolution(int n, List<int> lstCandidates, int i)
         {
             if (n == 0)
@@ -225,6 +228,258 @@ namespace Borut.Lectures.AlgorithmsRST
                             ||
                        SubsetSumRec(n, lstCandidates, i - 1);
             }
+        }
+
+        /// <summary>
+        /// Solving the 0/1 knapsack problem recursively, NOT paying special attention
+        /// to implicit restrictions.
+        /// The third parameter denotes the 1-based index of element being considered.
+        /// </summary>
+        public static int KnapsackProblemRec(int volume, List<Item> lstItems, int i)
+        {
+            if (i == 1)
+            {
+                if (volume < lstItems[i - 1].Volume)
+                    return 0;
+                else
+                    return lstItems[i - 1].Value;
+            }
+
+            int max1 = 0;
+            if (lstItems[i - 1].Volume <= volume)
+            {
+                max1 = KnapsackProblemRec(volume - lstItems[i - 1].Volume, lstItems, i - 1) + lstItems[i - 1].Value;
+            }
+            int max0 = KnapsackProblemRec(volume, lstItems, i - 1);
+
+            return Math.Max(max1, max0);
+        }
+
+        /// <summary>
+        /// Solving the 0/1 knapsack problem with backtracking but not yet optimized, 
+        /// using fractional knapsack problem solution for the upper bound.
+        /// </summary>
+        public static int KnapsackProblemNonRec(int volume, List<Item> lstItems)
+        {
+            int remainingValue = lstItems.Sum(x => x.Value);
+            int remainingVolume = lstItems.Sum(x => x.Volume);
+
+            int currentValue = 0;
+            int currentVolume = 0;
+
+            int maxValue = 0;
+            int maxUltimate = 0;
+
+            // Remember the considered cases: initial: -1, not taken: 0, taken: 1
+            Dictionary<int, int> dicTriedValues = new Dictionary<int, int>();
+            Dictionary<int, int> dicMaxValues = new Dictionary<int, int>();
+            for (int i = 0; i < lstItems.Count; i++)
+            {
+                dicTriedValues.Add(i, -1);
+                dicMaxValues.Add(i, 0);
+            }
+
+            for (int i = 0; i < lstItems.Count; i++)
+            {
+                if (i == lstItems.Count - 1)
+                    dicTriedValues[i] = 0;
+
+                // Not considered yet 
+                if (dicTriedValues[i] == -1)
+                {
+                    dicTriedValues[i] = 0;
+
+                    remainingValue -= lstItems[i].Value;
+                    remainingVolume -= lstItems[i].Volume;
+                }
+                // Considered but not taken yet
+                else if (dicTriedValues[i] == 0)
+                {
+                    dicTriedValues[i] = 1;
+
+                    remainingValue -= lstItems[i].Value;
+                    remainingVolume -= lstItems[i].Volume;
+
+                    if (volume >= currentVolume + lstItems[i].Volume)
+                    {
+                        currentValue += lstItems[i].Value;
+                        currentVolume += lstItems[i].Volume;
+
+                        if (maxValue < currentValue)
+                        {
+                            dicMaxValues[i] = maxValue;
+                            maxValue = currentValue;
+                            if (maxUltimate < maxValue)
+                                maxUltimate = maxValue;
+                        }
+
+                        // Return up if at the last item
+                        if (i == lstItems.Count - 1)
+                        {
+                            if (i == 0)
+                                return maxUltimate;
+
+                            // Go one step up
+                            remainingValue += lstItems[i].Value;
+                            remainingVolume += lstItems[i].Volume;
+                            dicTriedValues[i] = -1;
+
+                            currentValue -= lstItems[i].Value;
+                            currentVolume -= lstItems[i].Volume;
+                            if (maxValue > dicMaxValues[i])
+                            {
+                                maxValue = dicMaxValues[i];
+                                dicMaxValues[i] = 0;
+                            }
+                            i -= 2;
+                        }
+                    }
+                    else
+                    {
+                        // Go one step up
+                        remainingValue += lstItems[i].Value;
+                        remainingVolume += lstItems[i].Volume;
+                        dicTriedValues[i] = -1;
+                        i -= 2;
+                    }
+                }
+                else
+                {
+                    if (i == 0)
+                        return maxUltimate;
+
+                    // Go one step up
+                    remainingValue += lstItems[i].Value;
+                    remainingVolume += lstItems[i].Volume;
+                    dicTriedValues[i] = -1;
+
+                    currentValue -= lstItems[i].Value;
+                    currentVolume -= lstItems[i].Volume;
+                    if (maxValue > dicMaxValues[i])
+                    {
+                        maxValue = dicMaxValues[i];
+                        dicMaxValues[i] = 0;
+                    }
+                    i -= 2;
+                }
+            }
+
+            return maxUltimate;
+        }
+
+
+        /// <summary>
+        /// Solving the 0/1 knapsack problem with backtracking and optimized, 
+        /// using fractional knapsack problem solution for the upper bound.
+        /// </summary>
+        public static int KnapsackProblem(int volume, List<Item> lstItems)
+        {
+            int remainingValue = lstItems.Sum(x => x.Value);
+            int remainingVolume = lstItems.Sum(x => x.Volume);
+
+            int currentValue = 0;
+            int currentVolume = 0;
+
+            int maxValue = 0;
+            int maxUltimate = 0;
+
+            // Remember the considered cases: initial: -1, not taken: 0, taken: 1
+            Dictionary<int, int> dicTriedValues = new Dictionary<int, int>();
+            Dictionary<int, int> dicMaxValues = new Dictionary<int, int>();
+            for (int i = 0; i < lstItems.Count; i++)
+            {
+                dicTriedValues.Add(i, -1);
+                dicMaxValues.Add(i, 0);
+            }
+            (double fractMax, _) = Greedy.FractionalKnapsack(volume, lstItems);
+
+            for (int i = 0; i < lstItems.Count && i > -1; i++)
+            {
+                if (i == lstItems.Count - 1)
+                    dicTriedValues[i] = 0;
+
+                // Not considered yet 
+                if (dicTriedValues[i] == -1)
+                {
+                    dicTriedValues[i] = 0;
+
+                    remainingValue -= lstItems[i].Value;
+                    remainingVolume -= lstItems[i].Volume;
+                }
+                // Considered but not taken yet
+                else if (dicTriedValues[i] == 0)
+                {
+                    dicTriedValues[i] = 1;
+
+                    //(double tmpFrac, _) = Greedy.FractionalKnapsack(remainingVolume, lstItems.Skip(i).ToList());
+                    remainingValue -= lstItems[i].Value;
+                    remainingVolume -= lstItems[i].Volume;
+
+                    if (volume >= currentVolume + lstItems[i].Volume && currentValue + lstItems[i].Value < fractMax)
+                    {
+                        currentValue += lstItems[i].Value;
+                        currentVolume += lstItems[i].Volume;
+
+                        if (maxValue < currentValue)
+                        {
+                            dicMaxValues[i] = maxValue;
+                            maxValue = currentValue;
+                            if (maxUltimate < maxValue)
+                                maxUltimate = maxValue;
+                        }
+
+                        // Return up if at the last item
+                        if (i == lstItems.Count - 1)
+                        {
+                            if (i == 0)
+                                return maxUltimate;
+
+                            // Go one step up
+                            remainingValue += lstItems[i].Value;
+                            remainingVolume += lstItems[i].Volume;
+                            dicTriedValues[i] = -1;
+
+                            currentValue -= lstItems[i].Value;
+                            currentVolume -= lstItems[i].Volume;
+                            if (maxValue > dicMaxValues[i])
+                            {
+                                maxValue = dicMaxValues[i];
+                                dicMaxValues[i] = 0;
+                            }
+                            i -= 2;
+                        }
+                    }
+                    else
+                    {
+                        // Go one step up
+                        remainingValue += lstItems[i].Value;
+                        remainingVolume += lstItems[i].Volume;
+                        dicTriedValues[i] = -1;
+                        i -= 2;
+                    }
+                }
+                else
+                {
+                    if (i == 0)
+                        return maxUltimate;
+
+                    // Go one step up
+                    remainingValue += lstItems[i].Value;
+                    remainingVolume += lstItems[i].Volume;
+                    dicTriedValues[i] = -1;
+
+                    currentValue -= lstItems[i].Value;
+                    currentVolume -= lstItems[i].Volume;
+                    if (maxValue > dicMaxValues[i])
+                    {
+                        maxValue = dicMaxValues[i];
+                        dicMaxValues[i] = 0;
+                    }
+                    i -= 2;
+                }
+            }
+
+            return maxUltimate;
         }
     }
 }
