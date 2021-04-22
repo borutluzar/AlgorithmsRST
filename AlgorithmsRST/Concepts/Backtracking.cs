@@ -256,230 +256,69 @@ namespace Borut.Lectures.AlgorithmsRST
         }
 
         /// <summary>
-        /// Solving the 0/1 knapsack problem with backtracking but not yet optimized, 
-        /// using fractional knapsack problem solution for the upper bound.
-        /// </summary>
-        public static int KnapsackProblemNonRec(int volume, List<Item> lstItems)
-        {
-            int remainingValue = lstItems.Sum(x => x.Value);
-            int remainingVolume = lstItems.Sum(x => x.Volume);
-
-            int currentValue = 0;
-            int currentVolume = 0;
-
-            int maxValue = 0;
-            int maxUltimate = 0;
-
-            // Remember the considered cases: initial: -1, not taken: 0, taken: 1
-            Dictionary<int, int> dicTriedValues = new Dictionary<int, int>();
-            Dictionary<int, int> dicMaxValues = new Dictionary<int, int>();
-            for (int i = 0; i < lstItems.Count; i++)
-            {
-                dicTriedValues.Add(i, -1);
-                dicMaxValues.Add(i, 0);
-            }
-
-            for (int i = 0; i < lstItems.Count; i++)
-            {
-                if (i == lstItems.Count - 1)
-                    dicTriedValues[i] = 0;
-
-                // Not considered yet 
-                if (dicTriedValues[i] == -1)
-                {
-                    dicTriedValues[i] = 0;
-
-                    remainingValue -= lstItems[i].Value;
-                    remainingVolume -= lstItems[i].Volume;
-                }
-                // Considered but not taken yet
-                else if (dicTriedValues[i] == 0)
-                {
-                    dicTriedValues[i] = 1;
-
-                    remainingValue -= lstItems[i].Value;
-                    remainingVolume -= lstItems[i].Volume;
-
-                    if (volume >= currentVolume + lstItems[i].Volume)
-                    {
-                        currentValue += lstItems[i].Value;
-                        currentVolume += lstItems[i].Volume;
-
-                        if (maxValue < currentValue)
-                        {
-                            dicMaxValues[i] = maxValue;
-                            maxValue = currentValue;
-                            if (maxUltimate < maxValue)
-                                maxUltimate = maxValue;
-                        }
-
-                        // Return up if at the last item
-                        if (i == lstItems.Count - 1)
-                        {
-                            if (i == 0)
-                                return maxUltimate;
-
-                            // Go one step up
-                            remainingValue += lstItems[i].Value;
-                            remainingVolume += lstItems[i].Volume;
-                            dicTriedValues[i] = -1;
-
-                            currentValue -= lstItems[i].Value;
-                            currentVolume -= lstItems[i].Volume;
-                            if (maxValue > dicMaxValues[i])
-                            {
-                                maxValue = dicMaxValues[i];
-                                dicMaxValues[i] = 0;
-                            }
-                            i -= 2;
-                        }
-                    }
-                    else
-                    {
-                        // Go one step up
-                        remainingValue += lstItems[i].Value;
-                        remainingVolume += lstItems[i].Volume;
-                        dicTriedValues[i] = -1;
-                        i -= 2;
-                    }
-                }
-                else
-                {
-                    if (i == 0)
-                        return maxUltimate;
-
-                    // Go one step up
-                    remainingValue += lstItems[i].Value;
-                    remainingVolume += lstItems[i].Volume;
-                    dicTriedValues[i] = -1;
-
-                    currentValue -= lstItems[i].Value;
-                    currentVolume -= lstItems[i].Volume;
-                    if (maxValue > dicMaxValues[i])
-                    {
-                        maxValue = dicMaxValues[i];
-                        dicMaxValues[i] = 0;
-                    }
-                    i -= 2;
-                }
-            }
-
-            return maxUltimate;
-        }
-
-
-        /// <summary>
-        /// Solving the 0/1 knapsack problem with backtracking and optimized, 
+        /// Solving the 0/1 knapsack problem with backtracking, 
         /// using fractional knapsack problem solution for the upper bound.
         /// </summary>
         public static int KnapsackProblem(int volume, List<Item> lstItems)
         {
-            int remainingValue = lstItems.Sum(x => x.Value);
-            int remainingVolume = lstItems.Sum(x => x.Volume);
+            // Order items by relative value
+            lstItems = lstItems.OrderByDescending(x => (double)x.Value / x.Volume).ToList();
 
-            int currentValue = 0;
-            int currentVolume = 0;
-
+            // A "global" variable to carry max found value
             int maxValue = 0;
-            int maxUltimate = 0;
+            // Call recursive function
+            KnapsackInternal(volume, lstItems, 0, 0, 0, ref maxValue);
+            return maxValue;
+        }
 
-            // Remember the considered cases: initial: -1, not taken: 0, taken: 1
-            Dictionary<int, int> dicTriedValues = new Dictionary<int, int>();
-            Dictionary<int, int> dicMaxValues = new Dictionary<int, int>();
-            for (int i = 0; i < lstItems.Count; i++)
+        /// <summary>
+        /// Traversing the state tree in depth
+        /// </summary>
+        private static void KnapsackInternal(int volume, List<Item> lstItems, int i, int currentValue, int currentVolume, ref int maxprofit)
+        {
+            if (currentVolume <= volume && currentValue > maxprofit)
             {
-                dicTriedValues.Add(i, -1);
-                dicMaxValues.Add(i, 0);
-            }
-            (double fractMax, _) = Greedy.FractionalKnapsack(volume, lstItems);
-
-            for (int i = 0; i < lstItems.Count && i > -1; i++)
+                maxprofit = currentValue;
+            }                                         
+                                                      
+            if (IsPromising(i, volume, currentValue, currentVolume, maxprofit, lstItems))
             {
-                if (i == lstItems.Count - 1)
-                    dicTriedValues[i] = 0;
-
-                // Not considered yet 
-                if (dicTriedValues[i] == -1)
-                {
-                    dicTriedValues[i] = 0;
-
-                    remainingValue -= lstItems[i].Value;
-                    remainingVolume -= lstItems[i].Volume;
-                }
-                // Considered but not taken yet
-                else if (dicTriedValues[i] == 0)
-                {
-                    dicTriedValues[i] = 1;
-
-                    //(double tmpFrac, _) = Greedy.FractionalKnapsack(remainingVolume, lstItems.Skip(i).ToList());
-                    remainingValue -= lstItems[i].Value;
-                    remainingVolume -= lstItems[i].Volume;
-
-                    if (volume >= currentVolume + lstItems[i].Volume && currentValue + lstItems[i].Value < fractMax)
-                    {
-                        currentValue += lstItems[i].Value;
-                        currentVolume += lstItems[i].Volume;
-
-                        if (maxValue < currentValue)
-                        {
-                            dicMaxValues[i] = maxValue;
-                            maxValue = currentValue;
-                            if (maxUltimate < maxValue)
-                                maxUltimate = maxValue;
-                        }
-
-                        // Return up if at the last item
-                        if (i == lstItems.Count - 1)
-                        {
-                            if (i == 0)
-                                return maxUltimate;
-
-                            // Go one step up
-                            remainingValue += lstItems[i].Value;
-                            remainingVolume += lstItems[i].Volume;
-                            dicTriedValues[i] = -1;
-
-                            currentValue -= lstItems[i].Value;
-                            currentVolume -= lstItems[i].Volume;
-                            if (maxValue > dicMaxValues[i])
-                            {
-                                maxValue = dicMaxValues[i];
-                                dicMaxValues[i] = 0;
-                            }
-                            i -= 2;
-                        }
-                    }
-                    else
-                    {
-                        // Go one step up
-                        remainingValue += lstItems[i].Value;
-                        remainingVolume += lstItems[i].Volume;
-                        dicTriedValues[i] = -1;
-                        i -= 2;
-                    }
-                }
-                else
-                {
-                    if (i == 0)
-                        return maxUltimate;
-
-                    // Go one step up
-                    remainingValue += lstItems[i].Value;
-                    remainingVolume += lstItems[i].Volume;
-                    dicTriedValues[i] = -1;
-
-                    currentValue -= lstItems[i].Value;
-                    currentVolume -= lstItems[i].Volume;
-                    if (maxValue > dicMaxValues[i])
-                    {
-                        maxValue = dicMaxValues[i];
-                        dicMaxValues[i] = 0;
-                    }
-                    i -= 2;
-                }
+                KnapsackInternal(volume, lstItems, i+ 1, currentValue + lstItems[i].Value, currentVolume + lstItems[i].Volume, ref maxprofit);
+                KnapsackInternal(volume, lstItems, i + 1, currentValue, currentVolume, ref maxprofit); 
             }
+        }
 
-            return maxUltimate;
+        /// <summary>
+        /// Auxilliary function to compute fractional constraint for the node
+        /// </summary>
+        private static bool IsPromising(int i, int volume, int currentValue, int currentVolume, int maxValue, List<Item> lstItems)
+        {
+            // Node is promising only if we should expand to its children. 
+            // There must be some capacity left for the children.
+            if (currentVolume >= volume)
+                return false;
+            else
+            {
+                int totweight;
+                double bound;
+
+                int j = i;
+                bound = currentValue;
+                totweight = currentVolume;
+                
+                // Compute fractional solution
+                while (j < lstItems.Count && totweight + lstItems[j].Volume <= volume)
+                {
+                    // Grab as many items as possible.
+                    totweight += lstItems[j].Volume;
+                    bound += lstItems[j].Value;
+                    j++;
+                }
+                if (j < lstItems.Count)
+                    bound += (volume - totweight) * ((double)lstItems[j].Value / lstItems[j].Volume);
+
+                return bound > maxValue;
+            }
         }
     }
 }

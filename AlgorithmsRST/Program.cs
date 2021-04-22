@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Borut.Lectures.AlgorithmsRST
 {
@@ -468,7 +469,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.BranchAndBound:
                     {
                         Console.WriteLine("Testing branch and bound");
-                        BranchAndBound.Algorithm algType = BranchAndBound.Algorithm.General;
+                        BranchAndBound.Algorithm algType = BranchAndBound.Algorithm.KnapsackProblem;
 
                         switch (algType)
                         {
@@ -477,13 +478,59 @@ namespace Borut.Lectures.AlgorithmsRST
                                     int n = 50;
                                     int m = 100;
                                     Graph g = TestCasesGenerator.GenerateRandomGraph(n, m, 0);
+                                }
+                                break;
+                            case BranchAndBound.Algorithm.BreadthFirstSearch:
+                                {
+                                    BinaryTree tree = TestCasesGenerator.GenerateRandomBinaryTree(10, 20, 0);
 
-                                    Stopwatch sw;
-
-                                    sw = Stopwatch.StartNew();
-                                    //int numPositions = BranchAndBound.NQueens(i, new List<int>());
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    BranchAndBound.BreadthFirstSearch(tree);
                                     //Console.WriteLine($"Number of solutions for {i} queens is {numPositions}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                }
+                                break;
+                            case BranchAndBound.Algorithm.KnapsackProblem:
+                                {
+                                    /*int volume = 9;
+                                    List<Item> lstItems = new List<Item>()
+                                    {
+                                        new Item(){ Volume=2, Value=3},
+                                        new Item(){ Volume=4, Value=5},
+                                        new Item(){ Volume=4, Value=7},
+                                        new Item(){ Volume=6, Value=8}
+                                    };*/
 
+                                    int volume = 100;
+                                    List<Item> lstItems = new List<Item>();
+                                    Random rnd = new Random(1);
+                                    int k = 1000; // If volume is 1000, then for k = 50, B&B takes 25 seconds to execute (also queue has many items), dynamic prog. executes within a second
+                                    Console.WriteLine($"Knapsack volume: {volume}");
+                                    for (int i = 0; i < k; i++)
+                                    {
+                                        Item item = new Item() { Volume = rnd.Next(5, 10), Value = rnd.Next(10, 20) }; // k=40 takes 45 seconds
+                                        //Item item = new Item() { Volume = rnd.Next(5, 10), Value = rnd.Next(1, 10) }; // k=40 takes 1 second
+                                        lstItems.Add(item);
+                                        Console.WriteLine($"Item: {item}");
+                                    }
+
+                                    
+                                    // Branch and bound
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    int max = BranchAndBound.KnapsackProblem(volume, lstItems);
+                                    Console.WriteLine($"B&B: Optimal solution is {max}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+
+                                    // Dynamic
+                                    sw = Stopwatch.StartNew();
+                                    int maxDyn = Dynamic.KnapsackProblemDyn(volume, lstItems, lstItems.Count - 1, new Dictionary<(int MaxIndex, int Volume), int>());
+                                    Console.WriteLine($"DYN: Optimal solution is {maxDyn}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+
+                                    // Backtracking
+                                    sw = Stopwatch.StartNew();
+                                    int maxBack = Backtracking.KnapsackProblem(volume, lstItems);
+                                    Console.WriteLine($"BACK: Optimal solution is {maxBack}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+
+                                    if (max != maxDyn)
+                                        throw new Exception("Error in one of the algs!");
                                 }
                                 break;
                         }

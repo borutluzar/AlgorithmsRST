@@ -22,11 +22,16 @@ namespace Borut.Lectures.AlgorithmsRST
     /// <summary>
     /// The item class will often be used.
     /// </summary>
-    public class Item
+    public struct Item
     {
         public int Volume { get; set; }
 
         public int Value { get; set; }
+
+        public override string ToString()
+        {
+            return $"Vol: {Volume}, Val: {Value}";
+        }
     }
 
     public class Task
@@ -89,9 +94,16 @@ namespace Borut.Lectures.AlgorithmsRST
 
         public object Value { get; set; }
 
+        public int Level { get; set; }
+
         public BinaryNode LeftSon { get; set; }
 
         public BinaryNode RightSon { get; set; }
+
+        public override string ToString()
+        {
+            return $"[{Value}], Level: {Level}";
+        }
     }
 
     public class Graph
@@ -172,8 +184,10 @@ namespace Borut.Lectures.AlgorithmsRST
         /// <returns>The generated tree.</returns>
         public static BinaryTree GenerateRandomBinaryTree(int numNodes, int maxValue = 0, int? seed = null)
         {
-            BinaryTree tree = new BinaryTree() { Root = new BinaryNode() };
             Random rnd = seed == null ? new Random() : new Random(seed.Value);
+            int rootValue = rnd.Next(0, maxValue + 1);
+            BinaryTree tree = new BinaryTree() { Root = new BinaryNode(maxValue == 0 ? null : rootValue) };
+            
             BinaryNode currentNode = tree.Root;
             List<BinaryNode> lstNodes = new List<BinaryNode>() { currentNode };
 
