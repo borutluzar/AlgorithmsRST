@@ -9,16 +9,13 @@ namespace Borut.Lectures.AlgorithmsRST
     {
         static void Main(string[] args)
         {
-            Chapter chTests = Chapter.BranchAndBound;
-
-            switch (chTests)
+            switch (InterfaceFunctions.ChooseSection<Chapter>())
             {
                 case Chapter.GreedyAlgorithm:
                     {
                         Console.WriteLine("Testing greedy method");
-                        Greedy.Algorithm algType = Greedy.Algorithm.FractionalKnapsack;
 
-                        switch (algType)
+                        switch (InterfaceFunctions.ChooseSection<Greedy.Algorithm>())
                         {
                             case Greedy.Algorithm.FractionalKnapsack:
                                 {
@@ -63,9 +60,8 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.DivideAndConquer:
                     {
                         Console.WriteLine("Testing divide and conquer");
-                        DivideAndConquer.Algorithm algType = DivideAndConquer.Algorithm.MaxSubsequenceSumLin;
 
-                        switch (algType)
+                        switch (InterfaceFunctions.ChooseSection<DivideAndConquer.Algorithm>())
                         {
                             case DivideAndConquer.Algorithm.Bisection:
                                 {
@@ -99,15 +95,40 @@ namespace Borut.Lectures.AlgorithmsRST
                                     Console.WriteLine($"The maximum sum is {max}.");
                                 }
                                 break;
+                            case DivideAndConquer.Algorithm.LargestIncreasingSubsequence:
+                                {
+                                    //var list = new List<int>() { 31, -41, 59, 26, -53, 58, 97, -93, -23, 84 };
+                                    var list = new List<int>();
+                                    Random rnd = new();
+                                    for (int i = 0; i < 100_000_000; i++)
+                                        list.Add(rnd.Next(0, 1000));
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    var max = DivideAndConquer.LargestIncreasingSubsequence(list);
+                                    Console.WriteLine($"Largest increasing subsequence has length {max}. [Time: {sw.Elapsed.TotalSeconds}]");
+                                }
+                                break;
+                            case DivideAndConquer.Algorithm.LargestIncreasingSubsequence_DivAndCon:
+                                {
+                                    //var list = new List<int>() { 31, -41, 59, 26, -53, 58, 97, -93, -23, 84 };
+                                    var list = new List<int>();
+                                    Random rnd = new();
+                                    for (int i = 0; i < 100_000_000; i++)
+                                        list.Add(rnd.Next(0, 1000));
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    var max = DivideAndConquer.LargestIncreasingSubsequence_DivAndCon(list, 0, list.Count - 1);
+                                    Console.WriteLine($"Largest increasing subsequence with divide and conquer has length {max}. [Time: {sw.Elapsed.TotalSeconds}]");
+                                }
+                                break;
                         }
                     }
                     break;
                 case Chapter.DynamicProgramming:
                     {
                         Console.WriteLine("Testing dynamic programming");
-                        Dynamic.Algorithm algType = Dynamic.Algorithm.IsomorphicTrees;
 
-                        switch (algType)
+                        switch (InterfaceFunctions.ChooseSection<Dynamic.Algorithm>())
                         {
                             case Dynamic.Algorithm.FibonacciRec:
                                 {
@@ -345,9 +366,8 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.Backtracking:
                     {
                         Console.WriteLine("Testing backtracking");
-                        Backtracking.Algorithm algType = Backtracking.Algorithm.Knapsack;
 
-                        switch (algType)
+                        switch (InterfaceFunctions.ChooseSection<Backtracking.Algorithm>())
                         {
                             case Backtracking.Algorithm.NQueens:
                                 {
@@ -469,9 +489,8 @@ namespace Borut.Lectures.AlgorithmsRST
                 case Chapter.BranchAndBound:
                     {
                         Console.WriteLine("Testing branch and bound");
-                        BranchAndBound.Algorithm algType = BranchAndBound.Algorithm.KnapsackProblem;
 
-                        switch (algType)
+                        switch (InterfaceFunctions.ChooseSection<BranchAndBound.Algorithm>())
                         {
                             case BranchAndBound.Algorithm.General:
                                 {
@@ -482,11 +501,13 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case BranchAndBound.Algorithm.BreadthFirstSearch:
                                 {
-                                    BinaryTree tree = TestCasesGenerator.GenerateRandomBinaryTree(10, 20, 0);
+                                    BinaryTree tree = TestCasesGenerator.GenerateRandomBinaryTree(10, 20, 1);
 
-                                    Stopwatch sw = Stopwatch.StartNew();
+                                    Console.WriteLine("BFS");
                                     BranchAndBound.BreadthFirstSearch(tree);
-                                    //Console.WriteLine($"Number of solutions for {i} queens is {numPositions}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+
+                                    Console.WriteLine("DFS");
+                                    Backtracking.DepthFirstSearch(tree);
                                 }
                                 break;
                             case BranchAndBound.Algorithm.KnapsackProblem:
@@ -500,10 +521,10 @@ namespace Borut.Lectures.AlgorithmsRST
                                         new Item(){ Volume=6, Value=8}
                                     };*/
 
-                                    int volume = 100;
+                                    int volume = 1000;
                                     List<Item> lstItems = new List<Item>();
                                     Random rnd = new Random(1);
-                                    int k = 1000; // If volume is 1000, then for k = 50, B&B takes 25 seconds to execute (also queue has many items), dynamic prog. executes within a second
+                                    int k = 35; // If volume is 1000, then for k = 50, B&B takes 25 seconds to execute (also queue has many items), dynamic prog. executes within a second
                                     Console.WriteLine($"Knapsack volume: {volume}");
                                     for (int i = 0; i < k; i++)
                                     {

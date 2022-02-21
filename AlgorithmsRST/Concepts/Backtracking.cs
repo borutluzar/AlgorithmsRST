@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Borut.Lectures.AlgorithmsRST
 {
@@ -13,12 +11,37 @@ namespace Borut.Lectures.AlgorithmsRST
     {
         public enum Algorithm
         {
+            DFS,
             NQueens,
             Exercise1,
             Knapsack,
             SubsetSum,
             SubsetSumLargeScale
         }
+
+        /// <summary>
+        /// Non-recursive implementation of depth first search with a stack.
+        /// </summary>
+        public static void DepthFirstSearch(BinaryTree tree)
+        {
+            var currentNode = tree.Root;
+            Stack<BinaryNode> stackNodes = new Stack<BinaryNode>();
+            stackNodes.Push(currentNode);
+
+            int countVisited = 0;
+            while (stackNodes.Count > 0)
+            {
+                currentNode = stackNodes.Pop();
+                Console.WriteLine($"Visiting node #{++countVisited} with value {currentNode.Value}");
+
+                // We start with right son since stack...
+                if (currentNode.RightSon != null)
+                    stackNodes.Push(currentNode.RightSon);
+                if (currentNode.LeftSon != null)
+                    stackNodes.Push(currentNode.LeftSon);
+            }
+        }
+
 
         /// <summary>
         /// We are solving task n queens problem, i.e., 
@@ -274,17 +297,17 @@ namespace Borut.Lectures.AlgorithmsRST
         /// <summary>
         /// Traversing the state tree in depth
         /// </summary>
-        private static void KnapsackInternal(int volume, List<Item> lstItems, int i, int currentValue, int currentVolume, ref int maxprofit)
+        private static void KnapsackInternal(int volume, List<Item> lstItems, int i, int currentValue, int currentVolume, ref int maxValue)
         {
-            if (currentVolume <= volume && currentValue > maxprofit)
+            if (currentVolume <= volume && currentValue > maxValue)
             {
-                maxprofit = currentValue;
+                maxValue = currentValue;
             }                                         
                                                       
-            if (IsPromising(i, volume, currentValue, currentVolume, maxprofit, lstItems))
+            if (IsPromising(i, volume, currentValue, currentVolume, maxValue, lstItems))
             {
-                KnapsackInternal(volume, lstItems, i+ 1, currentValue + lstItems[i].Value, currentVolume + lstItems[i].Volume, ref maxprofit);
-                KnapsackInternal(volume, lstItems, i + 1, currentValue, currentVolume, ref maxprofit); 
+                KnapsackInternal(volume, lstItems, i+ 1, currentValue + lstItems[i].Value, currentVolume + lstItems[i].Volume, ref maxValue);
+                KnapsackInternal(volume, lstItems, i + 1, currentValue, currentVolume, ref maxValue); 
             }
         }
 
@@ -299,23 +322,20 @@ namespace Borut.Lectures.AlgorithmsRST
                 return false;
             else
             {
-                int totweight;
-                double bound;
-
                 int j = i;
-                bound = currentValue;
-                totweight = currentVolume;
+                double bound = currentValue;
+                int totalValue = currentVolume;
                 
                 // Compute fractional solution
-                while (j < lstItems.Count && totweight + lstItems[j].Volume <= volume)
+                while (j < lstItems.Count && totalValue + lstItems[j].Volume <= volume)
                 {
                     // Grab as many items as possible.
-                    totweight += lstItems[j].Volume;
+                    totalValue += lstItems[j].Volume;
                     bound += lstItems[j].Value;
                     j++;
                 }
                 if (j < lstItems.Count)
-                    bound += (volume - totweight) * ((double)lstItems[j].Value / lstItems[j].Volume);
+                    bound += (volume - totalValue) * ((double)lstItems[j].Value / lstItems[j].Volume);
 
                 return bound > maxValue;
             }

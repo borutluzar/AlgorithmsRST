@@ -16,7 +16,9 @@ namespace Borut.Lectures.AlgorithmsRST
             Bisection,
             NaiveMaxSubsequenceSum,
             MaxSubsequenceSumDC,
-            MaxSubsequenceSumLin
+            MaxSubsequenceSumLin,
+            LargestIncreasingSubsequence,
+            LargestIncreasingSubsequence_DivAndCon
         }
 
         /// <summary>
@@ -119,9 +121,48 @@ namespace Borut.Lectures.AlgorithmsRST
             return max;
         }
 
-        public static int FindLargestIncreasingSubsequence(List<int> lst)
+        public static int LargestIncreasingSubsequence(List<int> lst)
         {
-            return 0;
+            int max = 1; // Always at least one
+            int currentMax = 1;
+            for (int i = 1; i < lst.Count; i++)
+            {
+                currentMax = lst[i] >= lst[i - 1] ? currentMax + 1 : 1;
+                max = Math.Max(max, currentMax);
+            }
+            return max;
+        }
+
+        public static int LargestIncreasingSubsequence_DivAndCon(List<int> lst, int start, int end)
+        {
+            // Check if we only have one element
+            if (start == end)
+                return 1;
+
+            int half = (start + end) / 2;
+
+            // Check left side from the break
+            int leftMax = 1;
+            for (int i = half - 1; i >= start; i--)
+            {
+                if (lst[i] < lst[i + 1]) leftMax++;
+                else break;
+            }
+
+            // Check right side from the break
+            int rightMax = 0;
+            for (int i = half + 1; i <= end; i++)
+            {
+                if (lst[i] > lst[i - 1]) rightMax++;
+                else break;
+            }
+
+            return new List<int>()
+                {
+                    leftMax + rightMax,
+                    LargestIncreasingSubsequence_DivAndCon(lst, start, half),
+                    LargestIncreasingSubsequence_DivAndCon(lst, half + 1, end)
+                }.Max();
         }
     }
 }
