@@ -24,7 +24,8 @@ namespace Borut.Lectures.AlgorithmsRST
             VankinsMile,
             MaxSolidBlock,
             MaxSolidSquareBlock,
-            MinPalindroms
+            MinPalindroms,
+            MinBankNotes
         }
 
         /// <summary>
@@ -678,6 +679,95 @@ namespace Borut.Lectures.AlgorithmsRST
             }
             dicMemo.Add(word, min + 1);
             return min + 1;
+        }
+
+        /// <summary>
+        /// Computes the minimum number of bank notes needed to pay out a given amount,
+        /// provided that the values of banknotes are known and for every value we have an unlimited amount of banknotes.
+        /// </summary>
+        public static int MinBankNotesRec(int totalAmount, ref List<int> lstValues)
+        {
+            if (totalAmount == 0)
+                return 0;
+
+            int min = int.MaxValue;
+
+            for (int i = 0; i < lstValues.Count; i++)
+            {
+                if (totalAmount - lstValues[i] < 0)
+                    continue;
+                var minI = MinBankNotesRec(totalAmount - lstValues[i], ref lstValues);
+                if (min > minI)
+                    min = minI;
+            }
+
+            return min == int.MaxValue ? int.MaxValue :  min + 1;
+        }
+
+        /// <summary>
+        /// Computes the minimum number of bank notes needed to pay out a given amount,
+        /// provided that the values of banknotes are known and for every value we have an unlimited amount of banknotes.
+        /// Here, we also use memoization.
+        /// </summary>
+        public static int MinBankNotesDyn(int totalAmount, ref List<int> lstValues, ref Dictionary<int, int> dicMemo)
+        {
+            if (totalAmount == 0)
+                return 0;
+
+            int min = int.MaxValue;
+
+            for (int i = lstValues.Count - 1; i >= 0; i--)
+            {
+                if (totalAmount - lstValues[i] < 0)
+                    continue;
+
+                int minI;
+                if (!dicMemo.ContainsKey(totalAmount - lstValues[i]))
+                {
+                    minI = MinBankNotesDyn(totalAmount - lstValues[i], ref lstValues, ref dicMemo);
+                    dicMemo.Add(totalAmount - lstValues[i], minI);
+                }
+                else
+                    minI = dicMemo[totalAmount - lstValues[i]];
+
+                if (min > minI)
+                    min = minI;
+            }
+
+            return min == int.MaxValue ? int.MaxValue : min + 1;
+        }
+
+        /// <summary>
+        /// Computes the minimum number of bank notes needed to pay out a given amount,
+        /// provided that the values of banknotes are known and for every value we have an unlimited amount of banknotes.
+        /// Here, we apart from memoization, we also do not try in a recursive call a value which is higher than the value from the previous call.
+        /// </summary>
+        public static int MinBankNotesDynOptimized(int totalAmount, ref List<int> lstValues, int upToValue, ref Dictionary<int, int> dicMemo)
+        {
+            if (totalAmount == 0)
+                return 0;
+
+            int min = int.MaxValue;
+
+            for (int i = upToValue; i >= 0; i--)
+            {
+                if (totalAmount - lstValues[i] < 0)
+                    continue;
+
+                int minI;
+                if (!dicMemo.ContainsKey(totalAmount - lstValues[i]))
+                {
+                    minI = MinBankNotesDynOptimized(totalAmount - lstValues[i], ref lstValues, i, ref dicMemo);
+                    dicMemo.Add(totalAmount - lstValues[i], minI);
+                }
+                else
+                    minI = dicMemo[totalAmount - lstValues[i]];
+
+                if (min > minI)
+                    min = minI;
+            }
+
+            return min == int.MaxValue ? int.MaxValue : min + 1;
         }
     }
 }

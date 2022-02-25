@@ -375,6 +375,26 @@ namespace Borut.Lectures.AlgorithmsRST
                                     Console.WriteLine($"DYNAMIC: Minimum number of palindroms for {word} is {result} in {sw.Elapsed.TotalSeconds}.");
                                 }
                                 break;
+                            case Dynamic.Algorithm.MinBankNotes:
+                                {
+                                    Dictionary<int, int> dicMemo = new Dictionary<int, int>();
+                                    List<int> lstValues = new List<int>() { 5, 20, 30, 47 };
+                                    int amount = 273;
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    int result = Dynamic.MinBankNotesRec(amount, ref lstValues);
+                                    Console.WriteLine($"Recursive: Minimum amount of banknotes is {result} in {sw.Elapsed.TotalSeconds}.");
+
+                                    sw = Stopwatch.StartNew();
+                                    result = Dynamic.MinBankNotesDyn(amount, ref lstValues, ref dicMemo);
+                                    Console.WriteLine($"DYNAMIC: Minimum amount of banknotes is {result} in {sw.Elapsed.TotalSeconds}.");
+
+                                    sw = Stopwatch.StartNew();
+                                    dicMemo = new Dictionary<int, int>();
+                                    result = Dynamic.MinBankNotesDynOptimized(amount, ref lstValues, lstValues.Count - 1, ref dicMemo);
+                                    Console.WriteLine($"DYNAMIC optimized: Minimum amount of banknotes is {result} in {sw.Elapsed.TotalSeconds}.");
+                                }
+                                break;
                         }
                     }
                     break;
