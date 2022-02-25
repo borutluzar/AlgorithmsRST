@@ -225,14 +225,14 @@ namespace Borut.Lectures.AlgorithmsRST
                                 {
                                     //string a = "borut", b = "lužar", c = "blouržuatr";
                                     //string a = "1234", b = "test", c = "t123e4st";
-                                    string a = "abababababaababababababa", b = "ababaababababababacababaaba", c = "ababaabababababababababaababaababababacaabababababa";
+                                    string a = "ananas", b = "mango", c = "amanangnaos";
 
                                     Stopwatch sw = Stopwatch.StartNew();
                                     bool result = Dynamic.ShuffleStringRec(a, b, c, a.Length - 1, b.Length - 1);
                                     Console.WriteLine($"String \"{c}\" is{(result ? "" : " NOT")} a shuffle of \"{a}\" and \"{b}\".");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
                                     sw = Stopwatch.StartNew();
-                                    bool result2 = Dynamic.ShuffleStringDyn(a, b, c);
+                                    bool result2 = Dynamic.ShuffleStringLin(a, b, c);
                                     Console.WriteLine($"String \"{c}\" is{(result2 ? "" : " NOT")} a shuffle of \"{a}\" and \"{b}\".");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
                                 }
@@ -358,6 +358,21 @@ namespace Borut.Lectures.AlgorithmsRST
                                     int result3 = Dynamic.MaxHomogeneBlock(matrix);
                                     Console.WriteLine($"DYNAMIC: Maximum solid block has area {result3}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
+                            case Dynamic.Algorithm.MinPalindroms:
+                                {
+                                    var word = "ribarezeracirep";
+                                    word = "pericarezeracirep";
+                                    word = "anabanana";
+
+                                    //var input = word.ToList();
+                                    var input = ExtensionMethods.RandomWord(4000);
+                                    var dic = new Dictionary<string, int>();
+                                    
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    var result = Dynamic.MinPalindromsRecMemo(input, ref dic);
+                                    Console.WriteLine($"DYNAMIC: Minimum number of palindroms for {word} is {result} in {sw.Elapsed.TotalSeconds}.");
                                 }
                                 break;
                         }
@@ -534,7 +549,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                         Console.WriteLine($"Item: {item}");
                                     }
 
-                                    
+
                                     // Branch and bound
                                     Stopwatch sw = Stopwatch.StartNew();
                                     int max = BranchAndBound.KnapsackProblem(volume, lstItems);

@@ -23,7 +23,8 @@ namespace Borut.Lectures.AlgorithmsRST
             ShuffleString,
             VankinsMile,
             MaxSolidBlock,
-            MaxSolidSquareBlock
+            MaxSolidSquareBlock,
+            MinPalindroms
         }
 
         /// <summary>
@@ -221,11 +222,12 @@ namespace Borut.Lectures.AlgorithmsRST
         }
 
         /// <summary>
+        /// A greedy approach which DOES NOT WORK!
         /// Given three strings, it greedily decides whether the third is
         /// ordered combination of the former two.
         /// BANANA, ANANAS => BAANNAANNAAS
         /// </summary>
-        public static bool ShuffleStringDyn(string a, string b, string c)
+        public static bool ShuffleStringLin(string a, string b, string c)
         {
             if (a.Length + b.Length > c.Length) throw new Exception("Incorrect input");
 
@@ -370,7 +372,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 signature.Append("L");
                 signature.Append(TraverseNodesForSubtrees(root.LeftSon, ref hsSubs));
                 signature.Append(")");
-            }            
+            }
 
             // Get signature of right son
             if (root.RightSon != null)
@@ -616,5 +618,66 @@ namespace Borut.Lectures.AlgorithmsRST
             return maxArea;
         }
 
+        /// <summary>
+        /// Computes the minimum number of palindroms into which a given word (list of characters)
+        /// can be decomposed.
+        /// </summary>
+        /// <param name="word">List of word's characters</param>
+        /// <param name="k">Last index of the first palindrom's character</param>
+        /// <returns>The minimum number of palindroms into which the word can be decomposed</returns>
+        public static int MinPalindromsRec(List<char> word)
+        {
+            if (word.Count == 1)
+                return 1;
+
+            if (IsPalindrom(word))
+                return 1;
+
+            int min = int.MaxValue;
+            for (int i = 0; i < word.Count - 1; i++)
+            {
+                if (IsPalindrom(word.GetRange(0, i + 1)))
+                {
+                    var innerMin = MinPalindromsRec(word.GetRange(i + 1, word.Count - i - 1));
+                    if (min > innerMin)
+                        min = innerMin;
+                }
+            }
+            return min + 1;
+        }
+
+        private static bool IsPalindrom(List<char> word)
+        {
+            for (int i = 0; i < word.Count / 2; i++)
+                if (word[i] != word[word.Count - i - 1]) return false;
+            return true;
+        }
+
+        public static int MinPalindromsRecMemo(string word, ref Dictionary<string, int> dicMemo)
+        {
+            if (word.Length == 1)
+                return 1;
+
+            if (IsPalindrom(word.ToList()))
+                return 1;
+
+            int min = int.MaxValue;
+            for (int i = 0; i < word.Length - 1; i++)
+            {
+                if (IsPalindrom(word.Substring(0, i + 1).ToList()))
+                {
+                    var testWord = word.Substring(i + 1, word.Length - i - 1);
+                    int innerMin;
+                    if (dicMemo.ContainsKey(testWord))
+                        innerMin = dicMemo[testWord];
+                    else
+                        innerMin = MinPalindromsRecMemo(testWord, ref dicMemo);
+                    if (min > innerMin)
+                        min = innerMin;
+                }
+            }
+            dicMemo.Add(word, min + 1);
+            return min + 1;
+        }
     }
 }

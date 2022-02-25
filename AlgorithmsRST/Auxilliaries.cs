@@ -351,6 +351,28 @@ namespace Borut.Lectures.AlgorithmsRST
             }
             return newMatrix;
         }
+
+        /// <summary>
+        /// Returns a random word over a given alphabet
+        /// </summary>
+        public static string RandomWord(int length)
+        {
+            List<char> alphabet = new() { 'a', 'b', 'c', 'd', 'e', 'f', 
+                                          'g', 'h', 'i', 'j', 'k', 'l',
+                                          'm', 'n', 'o', 'p', 'q', 'r',
+                                          's', 't', 'u', 'v', 'x', 'y',
+                                          'w', 'z'
+                                        };
+
+            Random rnd = new Random();
+
+            StringBuilder word = new();
+            for(int i=0; i<length; i++)
+            {
+                word.Append(alphabet[rnd.Next(0, 26)]);
+            }
+            return word.ToString();
+        }
     }
 
     public static class InterfaceFunctions
