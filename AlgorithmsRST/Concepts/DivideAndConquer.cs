@@ -18,7 +18,9 @@ namespace Borut.Lectures.AlgorithmsRST
             MaxSubsequenceSumDC,
             MaxSubsequenceSumLin,
             LargestIncreasingSubsequence,
-            LargestIncreasingSubsequence_DivAndCon
+            LargestIncreasingSubsequence_DivAndCon,
+            CountingInversionsExhaustive,
+            CountingInversions_DivAndCon
         }
 
         /// <summary>
@@ -90,7 +92,7 @@ namespace Borut.Lectures.AlgorithmsRST
 
             // Check right side from the break
             int rightMax = 0, rightSum = 0;
-            for (int i = half+1; i <= end; i++)
+            for (int i = half + 1; i <= end; i++)
             {
                 rightSum += lst[i];
                 if (rightMax < rightSum) rightMax = rightSum;
@@ -100,7 +102,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 {
                     leftMax + rightMax,
                     MaxSubsequenceSum_DivAndCon(lst, start, half),
-                    MaxSubsequenceSum_DivAndCon(lst, half + 1, end) 
+                    MaxSubsequenceSum_DivAndCon(lst, half + 1, end)
                 }.Max();
         }
 
@@ -163,6 +165,78 @@ namespace Borut.Lectures.AlgorithmsRST
                     LargestIncreasingSubsequence_DivAndCon(lst, start, half),
                     LargestIncreasingSubsequence_DivAndCon(lst, half + 1, end)
                 }.Max();
+        }
+
+        /// <summary>
+        /// For a given list {a_i} counts the number of elements 
+        /// with i &lt; j and a_i &gt; a_j.
+        /// </summary>
+        public static int CountInversionsExhaustive(List<int> sequence, out List<(int, int)> inversions)
+        {
+            int countInversions = 0;
+            inversions = new List<(int, int)>();
+            for (int i = 0; i < sequence.Count; i++)
+            {
+                for (int j = i + 1; j < sequence.Count; j++)
+                {
+                    if (sequence[i] > sequence[j])
+                    {
+                        countInversions++;
+                        inversions.Add((sequence[i], sequence[j]));
+                    }
+                }
+            }
+            return countInversions;
+        }
+
+        public static (List<int> OrderedList, int Inversions) CountInversionsDivideAndConquer(List<int> sequence)
+        {
+            // Handle the trivial cases
+            if (sequence.Count <= 1)
+                return (sequence, 0);
+
+            int half = sequence.Count / 2;
+            var lstLeft = sequence.GetRange(0, half);
+            var lstRight = sequence.GetRange(half, sequence.Count - half);
+            // Recursive calls on the left and right part
+            (var lstLeftOrd, var numInvLeft) = CountInversionsDivideAndConquer(lstLeft);
+            (var lstRightOrd, var numInvRight) = CountInversionsDivideAndConquer(lstRight);
+
+            // Counting split inversions
+            (var lstOrdered, var numSplitInv) = MergeAndCountSplitInversions(lstLeftOrd, lstRightOrd);
+            return (lstOrdered, numInvLeft + numInvRight + numSplitInv);
+        }
+
+        private static (List<int> OrderedList, int Inversions) MergeAndCountSplitInversions(List<int> seqLeft, List<int> seqRight)
+        {
+            int lft = 0,
+                rgt = 0;
+            int splitInversions = 0;
+            List<int> lstOrdered = new List<int>();
+
+            bool lftExhausted = false;
+            bool rgtExhausted = false;
+            for (int i = 0; i < seqLeft.Count + seqRight.Count; i++)
+            {
+                if (!lftExhausted &&  (rgtExhausted || seqLeft[lft] < seqRight[rgt]))
+                {
+                    lstOrdered.Add(seqLeft[lft]);
+                    lft++;
+                }
+                else
+                {
+                    lstOrdered.Add(seqRight[rgt]);
+                    rgt++;
+                    splitInversions += seqLeft.Count - lft;
+                }
+
+                if (lft == seqLeft.Count)
+                    lftExhausted = true;
+                if (rgt == seqRight.Count)
+                    rgtExhausted = true;
+            }
+
+            return (lstOrdered, splitInversions);
         }
     }
 }

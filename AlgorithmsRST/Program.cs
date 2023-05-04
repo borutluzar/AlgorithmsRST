@@ -121,6 +121,35 @@ namespace Borut.Lectures.AlgorithmsRST
                                     Console.WriteLine($"Largest increasing subsequence with divide and conquer has length {max}. [Time: {sw.Elapsed.TotalSeconds}]");
                                 }
                                 break;
+                            case DivideAndConquer.Algorithm.CountingInversionsExhaustive:
+                                {
+                                    var list = new List<int>() { 2, 4, 3, 5, 1, 6 };
+                                    /*var list = new List<int>();
+                                    Random rnd = new();
+                                    for (int i = 0; i < 100_000_000; i++)
+                                        list.Add(rnd.Next(0, 1000));
+                                    */
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    var inversions = DivideAndConquer.CountInversionsExhaustive(list, out List<(int, int)> lstInversions);
+                                    Console.WriteLine($"The nuber of inversions in the list is {inversions}. " +
+                                        $" The inversions are: {lstInversions.ToString<(int,int)>()}" +
+                                        $" [Time: {sw.Elapsed.TotalSeconds}]");
+                                }
+                                break;
+                            case DivideAndConquer.Algorithm.CountingInversions_DivAndCon:
+                                {
+                                    var list = new List<int>() { 2, 4, 3, 5, 1, 6, -1 };
+                                    /*var list = new List<int>();
+                                    Random rnd = new();
+                                    for (int i = 0; i < 100_000_000; i++)
+                                        list.Add(rnd.Next(0, 1000));
+                                    */
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    (var lstOrdered, var numInv) = DivideAndConquer.CountInversionsDivideAndConquer(list);
+                                    Console.WriteLine($"The number of inversions in the list is {numInv}. " +
+                                        $" [Time: {sw.Elapsed.TotalSeconds}]");
+                                }
+                                break;
                         }
                     }
                     break;
