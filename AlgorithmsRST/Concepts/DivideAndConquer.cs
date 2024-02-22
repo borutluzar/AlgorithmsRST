@@ -116,7 +116,7 @@ namespace Borut.Lectures.AlgorithmsRST
             int max = int.MinValue;
             int currentMax = int.MinValue;
             for (int i = 0; i < lst.Count; i++)
-            {
+            {                
                 currentMax = Math.Max(currentMax > int.MinValue ? currentMax + lst[i] : lst[i], int.MinValue);
                 max = Math.Max(max, currentMax);
             }

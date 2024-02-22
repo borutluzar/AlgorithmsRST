@@ -265,7 +265,7 @@ namespace Borut.Lectures.AlgorithmsRST
             int max = matrix[indX, indY];
 
             // Stop if at the border
-            if (indX + 1 == matrix.GetLength(0) || indY + 1 == matrix.GetLength(1))
+            if (indX + 1 == matrix.GetLength(0) && indY + 1 == matrix.GetLength(1))
                 return max;
 
             int maxDown = 0;
@@ -297,7 +297,7 @@ namespace Borut.Lectures.AlgorithmsRST
             int max = matrix[indX, indY];
 
             // Stop if at the border
-            if (indX + 1 == matrix.GetLength(0) || indY + 1 == matrix.GetLength(1))
+            if (indX + 1 == matrix.GetLength(0) && indY + 1 == matrix.GetLength(1))
             {
                 if (!dicStore.ContainsKey((X: indX, Y: indY)))
                     dicStore.Add((X: indX, Y: indY), max);

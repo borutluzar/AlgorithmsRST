@@ -89,8 +89,9 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case DivideAndConquer.Algorithm.MaxSubsequenceSumLin:
                                 {
-                                    var list = new List<int>() { -41, -53, -58, -93, -23, -84 };
+                                    //var list = new List<int>() { -41, -53, -58, -93, -23, -84 };
                                     //var list = new List<int>() { 31, -41, 59, 26, -53, 58, 97, -93, -23, 84 };
+                                    var list = new List<int>() { 5, -4, -2, 3, 2, -2, 1 };
                                     var max = DivideAndConquer.MaxSubsequenceSumLinear(list);
                                     Console.WriteLine($"The maximum sum is {max}.");
                                 }
@@ -161,7 +162,7 @@ namespace Borut.Lectures.AlgorithmsRST
                         {
                             case Dynamic.Algorithm.FibonacciRec:
                                 {
-                                    int k = 45;
+                                    int k = 40;
                                     Stopwatch sw = Stopwatch.StartNew();
                                     long result = Dynamic.FibonacciRec(k);
                                     Console.WriteLine($"The {k}-th element of the Fibonacci sequence is {result}.");
@@ -278,8 +279,8 @@ namespace Borut.Lectures.AlgorithmsRST
                                     //int[,] matrix = TestCasesGenerator.Generate2DMatrix(1000, 1000, 0, 10, 5);
 
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    /*int result = Dynamic.VankinsMileRec(matrix, 0, 0);
-                                    Console.WriteLine($"RECURSIVE: The optimal path has value {result}.");*/
+                                    int result = Dynamic.VankinsMileRec(matrix, 0, 0);
+                                    Console.WriteLine($"RECURSIVE: The optimal path has value {result}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
 
                                     sw = Stopwatch.StartNew();
@@ -369,7 +370,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                             { 1, 0, 0 }
                                         };*/
 
-                                    int[,] matrix = TestCasesGenerator.Generate2DMatrix(10000, 10000, 0, 1, 5);
+                                    int[,] matrix = TestCasesGenerator.Generate2DMatrix(100, 100, 0, 1, 5);
 
                                     Stopwatch sw = Stopwatch.StartNew();
                                     /*int result = Dynamic.VankinsMileRec(matrix, 0, 0);
