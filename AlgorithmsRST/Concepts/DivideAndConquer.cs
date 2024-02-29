@@ -113,6 +113,7 @@ namespace Borut.Lectures.AlgorithmsRST
         /// <summary>
         /// Given a list of integers, it finds the maximum sum of contiguous elements
         /// in linear time.
+        /// DOES NOT WORK FOR ALL NEGATIVE VALUES!
         /// </summary>
         public static int MaxSubsequenceSumLinear(List<int> lst)
         {
@@ -123,6 +124,30 @@ namespace Borut.Lectures.AlgorithmsRST
                 currentMax = Math.Max(currentMax > int.MinValue ? currentMax + lst[i] : lst[i], int.MinValue);
                 max = Math.Max(max, currentMax);
             }
+            return max;
+        }
+
+        /// <summary>
+        /// Given a list of integers, it finds the maximum sum of contiguous elements
+        /// in linear time.
+        /// </summary>
+        public static int MaxSubsequenceSumLinearWorkingForAllNegative(List<int> lst)
+        {
+            int max = int.MinValue;
+            int currentMax = 0;
+            bool allNegativeValues = true;
+            for (int i = 0; i < lst.Count; i++)
+            {
+                if (lst[i] >= 0)
+                    allNegativeValues = false;
+
+                currentMax = Math.Max(currentMax + lst[i], 0);
+                max = Math.Max(max, currentMax);
+            }
+
+            if (allNegativeValues)
+                return lst.Max();
+
             return max;
         }
 

@@ -89,28 +89,28 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case DivideAndConquer.Algorithm.MaxSubsequenceSumLin:
                                 {
-                                    //var list = new List<int>() { -41, -53, -58, -93, -23, -84 };
+                                    var list = new List<int>() { -41, -53, -58, -93, -23, -84 };
                                     //var list = new List<int>() { 31, -41, 59, 26, -53, 58, 97, -93, -23, 84 };
-                                    var list = new List<int>() { 5, -4, -2, 3, 2, -2, 1 };
-                                    var max = DivideAndConquer.MaxSubsequenceSumLinear(list);
+                                    //var list = new List<int>() { 5, -4, -2, 3, 2, -2, 1 };
+                                    var max = DivideAndConquer.MaxSubsequenceSumLinearWorkingForAllNegative(list);
                                     Console.WriteLine($"The maximum sum is {max}.");
                                 }
                                 break;
                             case DivideAndConquer.Algorithm.MaxSubsequenceCompareTimes:
                                 {
-                                    int size = 10_000_000;
+                                    int size = 10_000;
                                     var list = TestCasesGenerator.GenerateRandomListOfIntegers(size, -size, 5 * size, true);
 
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    //var max = DivideAndConquer.NaiveMaxSubsequenceSum(list);
-                                    //Console.WriteLine($"Naiven pristop se izvede v {sw.Elapsed.TotalSeconds:0.0000} - Rezultat: {max}");
+                                    var max = DivideAndConquer.NaiveMaxSubsequenceSum(list);
+                                    Console.WriteLine($"Naiven pristop se izvede v {sw.Elapsed.TotalSeconds:0.0000} - Rezultat: {max}");
 
                                     sw = Stopwatch.StartNew();
-                                    var max = DivideAndConquer.MaxSubsequenceSum_DivAndCon(list, 0, list.Count - 1);
+                                    max = DivideAndConquer.MaxSubsequenceSum_DivAndCon(list, 0, list.Count - 1);
                                     Console.WriteLine($"Pristop deli in vladaj se izvede v {sw.Elapsed.TotalSeconds:0.0000} - Rezultat: {max}");
 
                                     sw = Stopwatch.StartNew();
-                                    max = DivideAndConquer.MaxSubsequenceSumLinear(list);
+                                    max = DivideAndConquer.MaxSubsequenceSumLinearWorkingForAllNegative(list);
                                     Console.WriteLine($"Linearen pristop se izvede v {sw.Elapsed.TotalSeconds:0.0000} - Rezultat: {max}");
                                 }
                                 break;
