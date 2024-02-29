@@ -17,6 +17,7 @@ namespace Borut.Lectures.AlgorithmsRST
             NaiveMaxSubsequenceSum,
             MaxSubsequenceSumDC,
             MaxSubsequenceSumLin,
+            MaxSubsequenceCompareTimes,
             LargestIncreasingSubsequence,
             LargestIncreasingSubsequence_DivAndCon,
             CountingInversionsExhaustive,
