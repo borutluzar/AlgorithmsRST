@@ -73,7 +73,6 @@ namespace Borut.Lectures.AlgorithmsRST
         /// <summary>
         /// Given a list of integers, it finds the maximum sum of contiguous elements
         /// in O(n log(n)) time using divide and conquer approach.
-        /// DOES NOT WORK FOR ALL NEGATIVE NUMBERS
         /// </summary>
         public static int MaxSubsequenceSum_DivAndCon(List<int> lst, int start, int end)
         {
@@ -84,15 +83,18 @@ namespace Borut.Lectures.AlgorithmsRST
             int half = (start + end) / 2;
 
             // Check left side from the break
-            int leftMax = 0, leftSum = 0;
+            int leftMax = int.MinValue, leftSum = 0;
             for (int i = half; i >= start; i--)
             {
                 leftSum += lst[i];
-                if (leftMax < leftSum) leftMax = leftSum;
+                if (leftMax < leftSum)
+                {
+                    leftMax = leftSum;
+                }
             }
 
             // Check right side from the break
-            int rightMax = 0, rightSum = 0;
+            int rightMax = int.MinValue, rightSum = 0;
             for (int i = half + 1; i <= end; i++)
             {
                 rightSum += lst[i];

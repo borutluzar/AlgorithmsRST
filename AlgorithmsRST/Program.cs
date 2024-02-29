@@ -98,20 +98,20 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case DivideAndConquer.Algorithm.MaxSubsequenceCompareTimes:
                                 {
-                                    int size = 100_000;
-                                    var list = TestCasesGenerator.GenerateRandomListOfIntegers(size, -size, 3 * size, true);
+                                    int size = 10_000_000;
+                                    var list = TestCasesGenerator.GenerateRandomListOfIntegers(size, -size, 5 * size, true);
 
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    var max = DivideAndConquer.NaiveMaxSubsequenceSum(list);
-                                    Console.WriteLine($"Naiven pristop se izvede v {sw.Elapsed.TotalSeconds:0.##} - Rezultat: {max}");
+                                    //var max = DivideAndConquer.NaiveMaxSubsequenceSum(list);
+                                    //Console.WriteLine($"Naiven pristop se izvede v {sw.Elapsed.TotalSeconds:0.0000} - Rezultat: {max}");
 
                                     sw = Stopwatch.StartNew();
-                                    max = DivideAndConquer.MaxSubsequenceSum_DivAndCon(list, 0, list.Count - 1);
-                                    Console.WriteLine($"Pristop deli in vladaj se izvede v {sw.Elapsed.TotalSeconds:0.##} - Rezultat: {max}");
+                                    var max = DivideAndConquer.MaxSubsequenceSum_DivAndCon(list, 0, list.Count - 1);
+                                    Console.WriteLine($"Pristop deli in vladaj se izvede v {sw.Elapsed.TotalSeconds:0.0000} - Rezultat: {max}");
 
                                     sw = Stopwatch.StartNew();
                                     max = DivideAndConquer.MaxSubsequenceSumLinear(list);
-                                    Console.WriteLine($"Linearen pristop se izvede v {sw.Elapsed.TotalSeconds:0.##} - Rezultat: {max}");
+                                    Console.WriteLine($"Linearen pristop se izvede v {sw.Elapsed.TotalSeconds:0.0000} - Rezultat: {max}");
                                 }
                                 break;
                             case DivideAndConquer.Algorithm.LargestIncreasingSubsequence:
