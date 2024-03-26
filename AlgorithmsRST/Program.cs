@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 
 namespace Borut.Lectures.AlgorithmsRST
 {
@@ -151,7 +152,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                     Stopwatch sw = Stopwatch.StartNew();
                                     var inversions = DivideAndConquer.CountInversionsExhaustive(list, out List<(int, int)> lstInversions);
                                     Console.WriteLine($"The nuber of inversions in the list is {inversions}. " +
-                                        $" The inversions are: {lstInversions.ToString<(int,int)>()}" +
+                                        $" The inversions are: {lstInversions.ToString<(int, int)>()}" +
                                         $" [Time: {sw.Elapsed.TotalSeconds}]");
                                 }
                                 break;
@@ -180,7 +181,7 @@ namespace Borut.Lectures.AlgorithmsRST
                         {
                             case Dynamic.Algorithm.FibonacciRec:
                                 {
-                                    int k = 40;
+                                    int k = 45;
                                     Stopwatch sw = Stopwatch.StartNew();
                                     long result = Dynamic.FibonacciRec(k);
                                     Console.WriteLine($"The {k}-th element of the Fibonacci sequence is {result}.");
@@ -189,7 +190,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Dynamic.Algorithm.FibonacciList:
                                 {
-                                    int k = 1000;
+                                    int k = 1000; // Rezultat ne bo pravilen, ker je število ogromno!
                                     Stopwatch sw = Stopwatch.StartNew();
                                     long result = Dynamic.FibonacciList(k);
                                     Console.WriteLine($"The {k}-th element of the Fibonacci sequence is {result}.");
@@ -216,6 +217,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                         new Item(){ Volume=6, Value=8}
                                     };*/
 
+                                    /*
                                     int volume = 10;
                                     List<Item> lstItems = new List<Item>()
                                     {
@@ -224,14 +226,24 @@ namespace Borut.Lectures.AlgorithmsRST
                                         new Item(){ Volume=5, Value=7},
                                         new Item(){ Volume=6, Value=8},
                                     };
+                                    */
+
+                                    int volume = 200;
+                                    List<Item> lstItems = new List<Item>();
+                                    Random rnd = new Random(1);
+                                    int k = 35;
+                                    for (int i = 0; i < k; i++)
+                                    {
+                                        lstItems.Add(new Item() { Volume = rnd.Next(10, 40), Value = rnd.Next(5, 10) });
+                                    }
 
                                     int[] x = new int[lstItems.Count];
 
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    (int result, int[] xOut) = Dynamic.KnapsackProblemRecVec(volume, lstItems, lstItems.Count - 1, x);
-                                    //int result  = Dynamic.KnapsackProblemRec(volume, lstItems, lstItems.Count - 1);
+                                    //(int result, int[] xOut) = Dynamic.KnapsackProblemRecVec(volume, lstItems, lstItems.Count - 1, x);
+                                    int result = Dynamic.KnapsackProblemRec(volume, lstItems, lstItems.Count - 1);
                                     Console.WriteLine($"The maximum value of the knapsack is {result}.");
-                                    Console.WriteLine($"Vector of selected elements is {xOut.ToString<int>()}.");
+                                    //Console.WriteLine($"Vector of selected elements is {xOut.ToString<int>()}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
                                 }
                                 break;
@@ -249,7 +261,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                     int volume = 100;
                                     List<Item> lstItems = new List<Item>();
                                     Random rnd = new Random(1);
-                                    int k = 1000;
+                                    int k = 100; // 1000
                                     for (int i = 0; i < k; i++)
                                     {
                                         lstItems.Add(new Item() { Volume = rnd.Next(10, 40), Value = rnd.Next(5, 10) });
@@ -263,17 +275,19 @@ namespace Borut.Lectures.AlgorithmsRST
                                     Console.WriteLine($"DYNAMIC: The maximum value of the knapsack is {result}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
 
-                                    /*sw = Stopwatch.StartNew();
+                                    sw = Stopwatch.StartNew();
                                     result = Dynamic.KnapsackProblemRec(volume, lstItems, lstItems.Count - 1);
-                                    Console.WriteLine($"RECURSIVE: The maximum value of the knapsack is {result}.");                                    
-                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");*/
+                                    Console.WriteLine($"RECURSIVE: The maximum value of the knapsack is {result}.");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
                                 }
                                 break;
                             case Dynamic.Algorithm.ShuffleString:
                                 {
                                     //string a = "borut", b = "lužar", c = "blouržuatr";
-                                    //string a = "1234", b = "test", c = "t123e4st";
-                                    string a = "ananas", b = "mango", c = "amanangnaos";
+                                    string a = "1234mskdffgnbsddjsddsfkvnjnfvbdfssldosnfkdkdksdfi",
+                                        b = "testjdsksldnvnvjsjeefjsjsjkvlvkfshenf",
+                                        c = "1234mskdftestjdsksfgnbsddjsddsfkvnjnfldnvnvjsjeefvbdfssldosnfkdkdkjsjsjkvlvkfshenfsdfi";
+                                    //string a = "ananas", b = "mango", c = "amanangnaos";
 
                                     Stopwatch sw = Stopwatch.StartNew();
                                     bool result = Dynamic.ShuffleStringRec(a, b, c, a.Length - 1, b.Length - 1);
@@ -287,24 +301,47 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Dynamic.Algorithm.VankinsMile:
                                 {
+                                    /*
                                     int[,] matrix = new int[,]
                                         {
-                                            { 1, 3, -2, 3 },
-                                            { 2, 6, -2, 1 },
-                                            {-1,-2,  1, -2 }
+                                            { 1,  3, -2, 3 },
+                                            { 2,  6,  2, -1 },
+                                            {-1, -2, -1, -2 }
                                         };
+                                    */
 
-                                    //int[,] matrix = TestCasesGenerator.Generate2DMatrix(1000, 1000, 0, 10, 5);
+                                    int[,] matrix = TestCasesGenerator.Generate2DMatrix(1000, 1000, 0, 10, 5);
 
                                     Stopwatch sw = Stopwatch.StartNew();
+                                    /*
                                     int result = Dynamic.VankinsMileRec(matrix, 0, 0);
                                     Console.WriteLine($"RECURSIVE: The optimal path has value {result}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
-
+                                    
                                     sw = Stopwatch.StartNew();
+                                    */
                                     int result2 = Dynamic.VankinsMileDyn(matrix, 0, 0, new Dictionary<(int X, int Y), int>());
                                     Console.WriteLine($"DYNAMIC: The optimal path has value {result2}.");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
+                            case Dynamic.Algorithm.LongestCommonSubsequence:
+                                {
+                                    /*
+                                    var lst1 = new List<int>() { 1, 2, 3, 2, 5 };
+                                    var lst2 = new List<int>() { 1, 2, 4, 3, 1, 2 };                                    
+                                    */
+
+                                    var lst1 = TestCasesGenerator.GenerateRandomListOfIntegers(10000, 1, 100, false);
+                                    var lst2 = TestCasesGenerator.GenerateRandomListOfIntegers(10000, 1, 100, false);
+
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    int lcs = Dynamic.LongestCommonSubsequence(lst1, lst2);
+                                    Console.WriteLine($"The length of the longest common sequence between:\n" +
+                                        $"{lst1.ToString<int>()}\n" +
+                                        $"{lst2.ToString<int>()}\n" +
+                                        $"is {lcs}\n" +
+                                        $"Computed in {sw.Elapsed.TotalSeconds:0.00}");
                                 }
                                 break;
                             case Dynamic.Algorithm.IsomorphicTrees:
@@ -417,7 +454,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                     //var input = word.ToList();
                                     var input = ExtensionMethods.RandomWord(4000);
                                     var dic = new Dictionary<string, int>();
-                                    
+
                                     Stopwatch sw = Stopwatch.StartNew();
                                     var result = Dynamic.MinPalindromsRecMemo(input, ref dic);
                                     Console.WriteLine($"DYNAMIC: Minimum number of palindroms for {word} is {result} in {sw.Elapsed.TotalSeconds}.");

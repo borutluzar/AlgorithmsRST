@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@ namespace Borut.Lectures.AlgorithmsRST
             KnapsackRec,
             KnapsackRecVec,
             KnapsackDyn,
+            LongestCommonSubsequence,
             ShuffleString,
             VankinsMile,
             MaxSolidBlock,
@@ -47,6 +49,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 return 1;
 
             // Otherwise compute all values up to k and store them
+            // We are using memoization
             List<long> lstVals = new List<long>() { 1, 1 };
             for (int i = 2; i < k; i++)
             {
@@ -98,8 +101,8 @@ namespace Borut.Lectures.AlgorithmsRST
 
             // Otherwise make recursive call
             return Math.Max(
-              KnapsackProblemRec(volume, lstItems, maxIndex - 1),
-              KnapsackProblemRec(volume - lstItems[maxIndex].Volume, lstItems, maxIndex - 1) + lstItems[maxIndex].Value);
+              KnapsackProblemRec(volume - lstItems[maxIndex].Volume, lstItems, maxIndex - 1) + lstItems[maxIndex].Value,
+              KnapsackProblemRec(volume, lstItems, maxIndex - 1));
         }
 
         /// <summary>
@@ -152,7 +155,8 @@ namespace Borut.Lectures.AlgorithmsRST
         /// We are solving the 0/1 knapsack problem with dynamic programming by storing values
         /// of recursive calls.
         /// </summary>
-        public static int KnapsackProblemDyn(int volume, List<Item> lstItems, int maxIndex, Dictionary<(int MaxIndex, int Volume), int> dicStore)
+        public static int KnapsackProblemDyn(int volume, List<Item> lstItems, int maxIndex,
+            Dictionary<(int MaxIndex, int Volume), int> dicStore)
         {
             // Handle boundary cases
             // Negative volume means that the items do not fit
@@ -207,7 +211,7 @@ namespace Borut.Lectures.AlgorithmsRST
         /// </summary>
         public static bool ShuffleStringRec(string a, string b, string c, int indA, int indB)
         {
-            if (a.Length + b.Length > c.Length) throw new Exception("Incorrect input");
+            if (a.Length + b.Length != c.Length) throw new Exception("Incorrect input");
 
             // Boundary cases
             if (indA == -1)
@@ -624,7 +628,6 @@ namespace Borut.Lectures.AlgorithmsRST
         /// can be decomposed.
         /// </summary>
         /// <param name="word">List of word's characters</param>
-        /// <param name="k">Last index of the first palindrom's character</param>
         /// <returns>The minimum number of palindroms into which the word can be decomposed</returns>
         public static int MinPalindromsRec(List<char> word)
         {
@@ -701,7 +704,7 @@ namespace Borut.Lectures.AlgorithmsRST
                     min = minI;
             }
 
-            return min == int.MaxValue ? int.MaxValue :  min + 1;
+            return min == int.MaxValue ? int.MaxValue : min + 1;
         }
 
         /// <summary>
@@ -768,6 +771,35 @@ namespace Borut.Lectures.AlgorithmsRST
             }
 
             return min == int.MaxValue ? int.MaxValue : min + 1;
+        }
+
+        /// <summary>
+        /// Computes the length of the longest common subsequence of two sequences.
+        /// </summary>
+        public static int LongestCommonSubsequence(List<int> lst1, List<int> lst2)
+        {
+            int[,] matValues = new int[lst1.Count + 1, lst2.Count + 1];
+
+            // Traverse through the elements of the first sequence
+            // and compute the longest possible subsequence starting from them
+            // In the second sequence check the possibilities that the
+            // element lst1[i] is the first element of the sequence or
+            // it does not appear at all.
+            for (int i = 0; i < lst1.Count; i++)
+            {
+                for (int j = 0; j < lst2.Count; j++)
+                {
+                    if (lst1[i] == lst2[j])
+                    {
+                        matValues[i + 1, j + 1] = matValues[i, j] + 1;
+                    }
+                    else
+                    {
+                        matValues[i + 1, j + 1] = Math.Max(matValues[i, j + 1], matValues[i + 1, j]);
+                    }
+                }
+            }
+            return matValues[lst1.Count,lst2.Count];
         }
     }
 }

@@ -213,14 +213,17 @@ namespace Borut.Lectures.AlgorithmsRST
 
         public static List<int> GenerateRandomListOfIntegers(int numNumbers, int min, int max, bool distinct, int? seed = null)
         {
-            HashSet<int> lstNums = new HashSet<int>();
+            ICollection<int> lstNums = new HashSet<int>();
+            if (!distinct)
+                lstNums = new List<int>();
+
             Random rnd = seed == null ? new Random() : new Random(seed.Value);
 
-            while (lstNums.Count < numNumbers)
+            while (lstNums.Count() < numNumbers)
             {
                 int num = rnd.Next(min, max + 1);
 
-                if (distinct && !lstNums.Contains(num) || !distinct)
+                if (!distinct || distinct && !lstNums.Contains(num))
                     lstNums.Add(num);
             }
 
