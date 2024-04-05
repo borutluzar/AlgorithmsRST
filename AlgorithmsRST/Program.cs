@@ -503,8 +503,10 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Backtracking.Algorithm.SubsetSum:
                                 {
-                                    int n = 8;
-                                    List<int> lstCandidates = new List<int>() { 3, 4, 5 };
+                                    int n = 31;
+                                    List<int> lstCandidates = new List<int>() { 3, 7, 8, 13, 17, 21, 34, 36, 42, 54 };
+                                    lstCandidates = new List<int>() { 3, 3 };
+                                    lstCandidates = new List<int>() { 4, 6, 9, 13, 16 };
 
                                     Stopwatch sw = Stopwatch.StartNew();
                                     (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
@@ -677,6 +679,12 @@ namespace Borut.Lectures.AlgorithmsRST
                         }
                     }
                     break;
+                default:
+                    {
+                        var matrix = TestCasesGenerator.Generate2DMatrix(50, 50, 0, 100);
+                        TestCasesGenerator.Write2DMatrixToFile(matrix, "matrixBig.txt");
+                        break;
+                    }
             }
             Console.WriteLine("\nTesting done.");
             Console.Read();

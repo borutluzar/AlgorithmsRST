@@ -138,7 +138,7 @@ namespace Borut.Lectures.AlgorithmsRST
             List<int> lstCandidatesCopy = new List<int>(lstCandidates);
             //lstCandidatesCopy.Sort();
 
-            int totalSum = lstCandidatesCopy.Sum();
+            long totalSum = lstCandidatesCopy.Sum(x => (long)x);
 
             if (totalSum < n)
                 throw new ArithmeticException($"The candidates do not sum up to {n}!");
@@ -161,7 +161,7 @@ namespace Borut.Lectures.AlgorithmsRST
             for (int i = 0; i < lstCandidates.Count; i++) dicTriedValues.Add(i, new List<int>());
 
             int sumCurrent = 0;
-            int sumRemaining = lstCandidates.Sum();
+            long sumRemaining = lstCandidates.Sum(x => (long)x);
 
             for (int i = 0; i < lstCandidates.Count && i > -1; i++)
             {
@@ -186,11 +186,11 @@ namespace Borut.Lectures.AlgorithmsRST
                     sumCurrent += lstCandidates[i];
                     sumRemaining -= lstCandidates[i];
 
-                    if (lstCandidates[i] + sumCurrent < n)
+                    if (sumCurrent < n)
                     {
                         vecSumands[i] = 1;
                     }
-                    else if (lstCandidates[i] + sumCurrent > n)
+                    else if (sumCurrent > n)
                     {
                         i -= 1;
                         continue;
@@ -302,12 +302,12 @@ namespace Borut.Lectures.AlgorithmsRST
             if (currentVolume <= volume && currentValue > maxValue)
             {
                 maxValue = currentValue;
-            }                                         
-                                                      
+            }
+
             if (IsPromising(i, volume, currentValue, currentVolume, maxValue, lstItems))
             {
-                KnapsackInternal(volume, lstItems, i+ 1, currentValue + lstItems[i].Value, currentVolume + lstItems[i].Volume, ref maxValue);
-                KnapsackInternal(volume, lstItems, i + 1, currentValue, currentVolume, ref maxValue); 
+                KnapsackInternal(volume, lstItems, i + 1, currentValue + lstItems[i].Value, currentVolume + lstItems[i].Volume, ref maxValue);
+                KnapsackInternal(volume, lstItems, i + 1, currentValue, currentVolume, ref maxValue);
             }
         }
 
@@ -325,7 +325,7 @@ namespace Borut.Lectures.AlgorithmsRST
                 int j = i;
                 double bound = currentValue;
                 int totalValue = currentVolume;
-                
+
                 // Compute fractional solution
                 while (j < lstItems.Count && totalValue + lstItems[j].Volume <= volume)
                 {
