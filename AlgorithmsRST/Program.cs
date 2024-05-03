@@ -99,7 +99,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case DivideAndConquer.Algorithm.MaxSubsequenceCompareTimes:
                                 {
-                                    int size = 10_000;
+                                    int size = 100_000;
                                     var list = TestCasesGenerator.GenerateRandomListOfIntegers(size, -size, 5 * size, true);
 
                                     Stopwatch sw = Stopwatch.StartNew();
@@ -508,9 +508,10 @@ namespace Borut.Lectures.AlgorithmsRST
                                     lstCandidates = new List<int>() { 3, 3 };
                                     lstCandidates = new List<int>() { 4, 6, 9, 13, 16 };
 
+                                    bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
+
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
-                                    //bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
+                                    (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);                                    
 
                                     if (hasSum)
                                         Console.WriteLine($"The number {n} IS sum of numbers {lstSumands.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
@@ -522,13 +523,13 @@ namespace Borut.Lectures.AlgorithmsRST
                                 {
                                     for (int i = 0; i < 1; i++)
                                     {
-                                        int n = 500_000;
-                                        List<int> lstCandidates = TestCasesGenerator.GenerateRandomListOfIntegers(400_000, 1, 800_000, true, i);
-
+                                        int n = 20_000;
+                                        List<int> lstCandidates = TestCasesGenerator.GenerateRandomListOfIntegers(10_000, 1, 50_000, true, i);
+                                        //List<int> lstCandidates = TestCasesGenerator.GenerateRandomListOfIntegers(10_000, 1, 1000, true, i);
 
                                         Stopwatch sw = Stopwatch.StartNew();
                                         (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
-                                        //bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
+                                        //bool hasSum = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
 
                                         if (hasSum)
                                             Console.WriteLine($"The number {n} IS sum of numbers {lstSumands.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
