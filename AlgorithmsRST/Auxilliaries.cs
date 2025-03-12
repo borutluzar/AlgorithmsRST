@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -175,6 +178,21 @@ namespace Borut.Lectures.AlgorithmsRST
             return matrix;
         }
 
+        public static void Write2DMatrixToFile(int[,] matrix, string fileName)
+        {
+            StreamWriter sw = new StreamWriter(fileName);
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    sw.Write((j == 0 ? "" : "\t") + matrix[i, j]);
+                }
+                sw.Write("\n");
+            }
+            sw.Close();
+        }
+
         /// <summary>
         /// Generates a random binary tree with the given number of nodes.
         /// </summary>
@@ -187,7 +205,7 @@ namespace Borut.Lectures.AlgorithmsRST
             Random rnd = seed == null ? new Random() : new Random(seed.Value);
             int rootValue = rnd.Next(0, maxValue + 1);
             BinaryTree tree = new BinaryTree() { Root = new BinaryNode(maxValue == 0 ? null : rootValue) };
-            
+
             BinaryNode currentNode = tree.Root;
             List<BinaryNode> lstNodes = new List<BinaryNode>() { currentNode };
 
@@ -213,14 +231,17 @@ namespace Borut.Lectures.AlgorithmsRST
 
         public static List<int> GenerateRandomListOfIntegers(int numNumbers, int min, int max, bool distinct, int? seed = null)
         {
-            HashSet<int> lstNums = new HashSet<int>();
+            ICollection<int> lstNums = new HashSet<int>();
+            if (!distinct)
+                lstNums = new List<int>();
+
             Random rnd = seed == null ? new Random() : new Random(seed.Value);
 
-            while (lstNums.Count < numNumbers)
+            while (lstNums.Count() < numNumbers)
             {
                 int num = rnd.Next(min, max + 1);
 
-                if (distinct && !lstNums.Contains(num) || !distinct)
+                if (!distinct || distinct && !lstNums.Contains(num))
                     lstNums.Add(num);
             }
 
@@ -254,7 +275,7 @@ namespace Borut.Lectures.AlgorithmsRST
     }
 
     public static class ExtensionMethods
-    {
+    {        
         public static string ToString<T>(this T[] array, int round = -1)
         {
             StringBuilder sb = new StringBuilder();
@@ -357,7 +378,7 @@ namespace Borut.Lectures.AlgorithmsRST
         /// </summary>
         public static string RandomWord(int length)
         {
-            List<char> alphabet = new() { 'a', 'b', 'c', 'd', 'e', 'f', 
+            List<char> alphabet = new() { 'a', 'b', 'c', 'd', 'e', 'f',
                                           'g', 'h', 'i', 'j', 'k', 'l',
                                           'm', 'n', 'o', 'p', 'q', 'r',
                                           's', 't', 'u', 'v', 'x', 'y',
@@ -367,7 +388,7 @@ namespace Borut.Lectures.AlgorithmsRST
             Random rnd = new Random();
 
             StringBuilder word = new();
-            for(int i=0; i<length; i++)
+            for (int i = 0; i < length; i++)
             {
                 word.Append(alphabet[rnd.Next(0, 26)]);
             }

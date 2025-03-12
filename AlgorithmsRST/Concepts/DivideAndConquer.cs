@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace Borut.Lectures.AlgorithmsRST
             NaiveMaxSubsequenceSum,
             MaxSubsequenceSumDC,
             MaxSubsequenceSumLin,
+            MaxSubsequenceCompareTimes,
             LargestIncreasingSubsequence,
             LargestIncreasingSubsequence_DivAndCon,
             CountingInversionsExhaustive,
@@ -52,12 +54,12 @@ namespace Borut.Lectures.AlgorithmsRST
         /// Given a list of integers, it finds the maximum sum of contiguous elements
         /// in O(n^2) time.
         /// </summary>
-        public static int NaiveMaxSubsequenceSum(List<int> lst)
+        public static long NaiveMaxSubsequenceSum(List<int> lst)
         {
-            int max = int.MinValue;
+            long max = long.MinValue;
             for (int i = 0; i < lst.Count; i++)
             {
-                int sumI = 0;
+                long sumI = 0;
                 for (int j = i; j < lst.Count; j++)
                 {
                     sumI += lst[j];
@@ -72,9 +74,8 @@ namespace Borut.Lectures.AlgorithmsRST
         /// <summary>
         /// Given a list of integers, it finds the maximum sum of contiguous elements
         /// in O(n log(n)) time using divide and conquer approach.
-        /// DOES NOT WORK FOR ALL NEGATIVE NUMBERS
         /// </summary>
-        public static int MaxSubsequenceSum_DivAndCon(List<int> lst, int start, int end)
+        public static long MaxSubsequenceSum_DivAndCon(List<int> lst, int start, int end)
         {
             // Check if we only have one element
             if (start == end)
@@ -83,22 +84,25 @@ namespace Borut.Lectures.AlgorithmsRST
             int half = (start + end) / 2;
 
             // Check left side from the break
-            int leftMax = 0, leftSum = 0;
+            long leftMax = int.MinValue, leftSum = 0;
             for (int i = half; i >= start; i--)
             {
                 leftSum += lst[i];
-                if (leftMax < leftSum) leftMax = leftSum;
+                if (leftMax < leftSum)
+                {
+                    leftMax = leftSum;
+                }
             }
 
             // Check right side from the break
-            int rightMax = 0, rightSum = 0;
+            long rightMax = int.MinValue, rightSum = 0;
             for (int i = half + 1; i <= end; i++)
             {
                 rightSum += lst[i];
                 if (rightMax < rightSum) rightMax = rightSum;
             }
 
-            return new List<int>()
+            return new List<long>()
                 {
                     leftMax + rightMax,
                     MaxSubsequenceSum_DivAndCon(lst, start, half),
@@ -110,16 +114,41 @@ namespace Borut.Lectures.AlgorithmsRST
         /// <summary>
         /// Given a list of integers, it finds the maximum sum of contiguous elements
         /// in linear time.
+        /// DOES NOT WORK FOR ALL NEGATIVE VALUES!
         /// </summary>
         public static int MaxSubsequenceSumLinear(List<int> lst)
         {
             int max = int.MinValue;
             int currentMax = int.MinValue;
             for (int i = 0; i < lst.Count; i++)
-            {
+            {                
                 currentMax = Math.Max(currentMax > int.MinValue ? currentMax + lst[i] : lst[i], int.MinValue);
                 max = Math.Max(max, currentMax);
             }
+            return max;
+        }
+
+        /// <summary>
+        /// Given a list of integers, it finds the maximum sum of contiguous elements
+        /// in linear time.
+        /// </summary>
+        public static long MaxSubsequenceSumLinearWorkingForAllNegative(List<int> lst)
+        {
+            long max = int.MinValue;
+            long currentMax = 0;
+            bool allNegativeValues = true;
+            for (int i = 0; i < lst.Count; i++)
+            {
+                if (lst[i] >= 0)
+                    allNegativeValues = false;
+
+                currentMax = Math.Max(currentMax + lst[i], 0);
+                max = Math.Max(max, currentMax);
+            }
+
+            if (allNegativeValues)
+                return lst.Max();
+
             return max;
         }
 
