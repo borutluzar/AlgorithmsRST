@@ -168,9 +168,19 @@ namespace Borut.Lectures.AlgorithmsRST
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
                                 }
                                 break;
-                            case Dynamic.Algorithm.FibonacciList:
+                            case Dynamic.Algorithm.FibonacciMemo:
                                 {
-                                    int k = 1000;
+                                    int k = 45;                                    
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    Dictionary<int, long> dicStore = new();
+                                    long result = Dynamic.FibonacciRecMemo(k, dicStore);
+                                    Console.WriteLine($"The {k}-th element of the Fibonacci sequence is {result}.");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                }
+                                break;
+                            case Dynamic.Algorithm.FibonacciTabul:
+                                {
+                                    int k = 45;
                                     Stopwatch sw = Stopwatch.StartNew();
                                     long result = Dynamic.FibonacciList(k);
                                     Console.WriteLine($"The {k}-th element of the Fibonacci sequence is {result}.");
@@ -435,7 +445,7 @@ namespace Borut.Lectures.AlgorithmsRST
                         {
                             case Backtracking.Algorithm.NQueens:
                                 {
-                                    int n = 4;
+                                    int n = 15;
                                     Stopwatch sw;
                                     for (int i = 4; i <= n; i++)
                                     {

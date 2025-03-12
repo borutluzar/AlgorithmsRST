@@ -14,7 +14,8 @@ namespace Borut.Lectures.AlgorithmsRST
         public enum Algorithm
         {
             FibonacciRec,
-            FibonacciList,
+            FibonacciMemo,
+            FibonacciTabul,
             FibonacciDirect,
             IsomorphicTrees,
             KnapsackRec,
@@ -29,7 +30,7 @@ namespace Borut.Lectures.AlgorithmsRST
         }
 
         /// <summary>
-        /// We computing k-th Fibonacci number using recursion.
+        /// We are computing k-th Fibonacci number using recursion.
         /// </summary>
         public static long FibonacciRec(int k)
         {
@@ -40,6 +41,28 @@ namespace Borut.Lectures.AlgorithmsRST
             return FibonacciRec(k - 2) + FibonacciRec(k - 1);
         }
 
+        /// <summary>
+        /// Computing k-th Fibonacci number using recursion and memoization.
+        /// </summary>
+        public static long FibonacciRecMemo(int k, Dictionary<int, long> dicStore)
+        {
+            // For small k, we output the result directly
+            if (k == 1 || k == 2)
+                return 1;
+
+            // Otherwise check store or make recursive call
+            long fib2 = dicStore.ContainsKey(k - 2) ? dicStore[k - 2] : FibonacciRecMemo(k - 2, dicStore);
+            long fib1 = dicStore.ContainsKey(k - 1) ? dicStore[k - 1] : FibonacciRecMemo(k - 1, dicStore);
+
+            long result = fib2 + fib1;
+            // Store the result
+            dicStore.Add(k, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Computing k-th Fibonacci number using tabulation.
+        /// </summary>
         public static long FibonacciList(int k)
         {
             // For small k, we output the result directly
