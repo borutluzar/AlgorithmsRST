@@ -272,10 +272,46 @@ namespace Borut.Lectures.AlgorithmsRST
             }
             return g;
         }
+
+        public static string GenerateRandomString(int length)
+        {
+            StringBuilder b = new StringBuilder();
+            string[] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+                "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+
+            Random rnd = new Random();
+            for (int i = 0; i < length; i++)
+                b.Append(letters[rnd.Next(0, letters.Length)]);
+
+            return b.ToString();
+        }
+
+        public static string GenerateRandomShuffle(string a, string b)
+        {
+            int i = 0;
+            int j = 0;
+
+            StringBuilder c = new StringBuilder();
+            Random rnd = new();
+            for (int k = 0; k < a.Length + b.Length; k++)
+            {
+                int choose = rnd.Next(0, 2);
+                if (i < a.Length - 1 && choose == 0 || j == b.Length)
+                {
+                    c.Append(a[i++]);
+                }
+                else
+                {
+                    c.Append(b[j++]);
+                }
+            }
+
+            return c.ToString();
+        }
     }
 
     public static class ExtensionMethods
-    {        
+    {
         public static string ToString<T>(this T[] array, int round = -1)
         {
             StringBuilder sb = new StringBuilder();

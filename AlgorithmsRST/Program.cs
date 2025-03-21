@@ -190,7 +190,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Dynamic.Algorithm.FibonacciMemo:
                                 {
-                                    int k = 45;                                    
+                                    int k = 45;
                                     Stopwatch sw = Stopwatch.StartNew();
                                     Dictionary<int, long> dicStore = new();
                                     long result = Dynamic.FibonacciRecMemo(k, dicStore);
@@ -268,10 +268,10 @@ namespace Borut.Lectures.AlgorithmsRST
                                         new Item(){ Volume=6, Value=8}
                                     };*/
 
-                                    int volume = 100;
+                                    int volume = 200;
                                     List<Item> lstItems = new List<Item>();
                                     Random rnd = new Random(1);
-                                    int k = 100; // 1000
+                                    int k = 1000; // 1000
                                     for (int i = 0; i < k; i++)
                                     {
                                         lstItems.Add(new Item() { Volume = rnd.Next(10, 40), Value = rnd.Next(5, 10) });
@@ -294,19 +294,36 @@ namespace Borut.Lectures.AlgorithmsRST
                             case Dynamic.Algorithm.ShuffleString:
                                 {
                                     //string a = "borut", b = "lužar", c = "blouržuatr";
+                                    /*
                                     string a = "1234mskdffgnbsddjsddsfkvnjnfvbdfssldosnfkdkdksdfi",
-                                        b = "testjdsksldnvnvjsjeefjsjsjkvlvkfshenf",
-                                        c = "1234mskdftestjdsksfgnbsddjsddsfkvnjnfldnvnvjsjeefvbdfssldosnfkdkdkjsjsjkvlvkfshenfsdfi";
+                                        b = "testjdsksldnvnvjsjeefjsjsjkvlvkfshenfjkvlvkfshenf",
+                                        c = "1234mskdftestjdsksfgnbsddjsddsfkvnjnfldnvnvjsjeefvbdfssldosnfkdkdkjsjsjkvlvkfshenfsdfjkvlvkfshenfi";
+                                    */
                                     //string a = "ananas", b = "mango", c = "amanangnaos";
 
+                                    string a = TestCasesGenerator.GenerateRandomString(10_000);
+                                    string b = TestCasesGenerator.GenerateRandomString(10_000);
+                                    string c = TestCasesGenerator.GenerateRandomShuffle(a, b);
+
                                     Stopwatch sw = Stopwatch.StartNew();
+                                    /* // When string are long, say 10_000 characters, 
+                                     * we obtain StackOverflowException with recursive approach
                                     bool result = Dynamic.ShuffleStringRec(a, b, c, a.Length - 1, b.Length - 1);
                                     Console.WriteLine($"String \"{c}\" is{(result ? "" : " NOT")} a shuffle of \"{a}\" and \"{b}\".");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                    */
                                     sw = Stopwatch.StartNew();
+                                    bool resultTabu = Dynamic.ShuffleStringTabu(a, b, c);
+                                    Console.WriteLine($"String \"{c}\" is{(resultTabu ? "" : " NOT")}" +
+                                        $" a shuffle of \"{a}\" and \"{b}\".");
+                                    Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+
+                                    /*
+                                    sw = sw.Restart();
                                     bool result2 = Dynamic.ShuffleStringLin(a, b, c);
                                     Console.WriteLine($"String \"{c}\" is{(result2 ? "" : " NOT")} a shuffle of \"{a}\" and \"{b}\".");
                                     Console.WriteLine($"Result computed in {sw.Elapsed.TotalSeconds} seconds.");
+                                    */
                                 }
                                 break;
                             case Dynamic.Algorithm.VankinsMile:
@@ -521,7 +538,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                     bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
 
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);                                    
+                                    (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
 
                                     if (hasSum)
                                         Console.WriteLine($"The number {n} IS sum of numbers {lstSumands.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
