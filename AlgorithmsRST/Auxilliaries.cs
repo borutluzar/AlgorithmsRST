@@ -273,17 +273,39 @@ namespace Borut.Lectures.AlgorithmsRST
             return g;
         }
 
-        public static string GenerateRandomString(int length)
+        public static string GenerateRandomString(int length, bool includeNumbers = false)
         {
             StringBuilder b = new StringBuilder();
-            string[] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+            List<string> letters = new(){"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
                 "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+
+            if (includeNumbers)
+            {
+                letters.AddRange(new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+            }
 
             Random rnd = new Random();
             for (int i = 0; i < length; i++)
-                b.Append(letters[rnd.Next(0, letters.Length)]);
+                b.Append(letters[rnd.Next(0, letters.Count)]);
 
             return b.ToString();
+        }
+
+        public static void GenerateFileWithRandomStrings(string fileName, int numLines, int stringsPerLine, int minLength, int maxLength)
+        {
+            StreamWriter sw = new StreamWriter(fileName);
+
+            for (int i = 0; i < numLines; i++)
+            {
+                for (int j = 0; j < stringsPerLine; j++)
+                {
+                    Random rnd = new Random();
+                    int length = rnd.Next(minLength, maxLength + 1);
+                    sw.Write(GenerateRandomString(length, true) + "\t");
+                }
+                sw.WriteLine();
+            }
+            sw.Close();
         }
 
         public static string GenerateRandomShuffle(string a, string b)

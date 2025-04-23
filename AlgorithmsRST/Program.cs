@@ -463,7 +463,8 @@ namespace Borut.Lectures.AlgorithmsRST
                                     //int result2 = Dynamic.MaxHomogeneBlockRec(matrix);
                                     //Dynamic.PrintMaxSubSquare(matrix);
 
-                                    int[] histo = new int[] { 1, 2, 2, 0, 3, 2, 2 };
+                                    int[] histo = new int[] { 1, 2, 2, 4, 3, 3, 2 };
+                                    //int[] histo = new int[] { 3, 4, 2, 2, 5, 1 };
                                     int hist = Dynamic.MaxRectangleInHistogram(histo);
                                     //Console.WriteLine($"DYNAMIC: Hist area: {hist}.");
 

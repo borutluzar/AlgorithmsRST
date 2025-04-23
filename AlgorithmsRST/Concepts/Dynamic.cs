@@ -635,8 +635,7 @@ namespace Borut.Lectures.AlgorithmsRST
                     // If this bar is lower than top of stack, then calculate area of
                     // rectangle with stack top as the smallest (or minimum height) bar.
                     // 'i' is 'right index' for the top and element before top in stack is 'left index'
-                    stackTop = histValues[stack.Peek()];
-                    stack.Pop();
+                    stackTop = histValues[stack.Pop()];
 
                     if (stack.Count > 0)
                         area = stackTop * (i - stack.Peek() - 1);
@@ -651,8 +650,7 @@ namespace Borut.Lectures.AlgorithmsRST
             // every popped bar as the smallest bar
             while (stack.Count > 0)
             {
-                stackTop = histValues[stack.Peek()];
-                stack.Pop();
+                stackTop = histValues[stack.Pop()];
 
                 if (stack.Count > 0)
                     area = stackTop * (i - stack.Peek() - 1);
