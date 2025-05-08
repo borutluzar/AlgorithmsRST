@@ -190,7 +190,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Dynamic.Algorithm.FibonacciMemo:
                                 {
-                                    int k = 45;                                    
+                                    int k = 1000;
                                     Stopwatch sw = Stopwatch.StartNew();
                                     Dictionary<int, long> dicStore = new();
                                     long result = Dynamic.FibonacciRecMemo(k, dicStore);
@@ -200,7 +200,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                 break;
                             case Dynamic.Algorithm.FibonacciTabul:
                                 {
-                                    int k = 45;
+                                    int k = 1000;
                                     Stopwatch sw = Stopwatch.StartNew();
                                     long result = Dynamic.FibonacciList(k);
                                     Console.WriteLine($"The {k}-th element of the Fibonacci sequence is {result}.");
@@ -511,6 +511,15 @@ namespace Borut.Lectures.AlgorithmsRST
                                     }
                                 }
                                 break;
+                            case Backtracking.Algorithm.NKnights:
+                                {
+                                    int n = 3;
+                                    int k = 2;
+                                    Stopwatch sw = Stopwatch.StartNew();
+                                    int numPositions = Backtracking.NKnights(n, k, true);
+                                    Console.WriteLine($"Number of solutions for {k} knights is {numPositions}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
+                                }
+                                break;
                             case Backtracking.Algorithm.SubsetSum:
                                 {
                                     int n = 31;
@@ -521,7 +530,7 @@ namespace Borut.Lectures.AlgorithmsRST
                                     bool hasSumRec = Backtracking.SubsetSumRec(n, lstCandidates, lstCandidates.Count);
 
                                     Stopwatch sw = Stopwatch.StartNew();
-                                    (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);                                    
+                                    (bool hasSum, List<int> lstSumands) = Backtracking.SubsetSum(n, lstCandidates);
 
                                     if (hasSum)
                                         Console.WriteLine($"The number {n} IS sum of numbers {lstSumands.ToString<int>()}. \t (Time: {sw.Elapsed.TotalSeconds} s)");
@@ -560,6 +569,46 @@ namespace Borut.Lectures.AlgorithmsRST
                                     else
                                         Console.WriteLine($"A solution for {n} queens does not exist. \t (Time: {sw.Elapsed.TotalSeconds} s)");
 
+                                }
+                                break;
+                            case Backtracking.Algorithm.CommonSubsequence:
+                                {
+                                    List<int> A = new() { 1, 2, 6, 4, 8, 7 };
+                                    List<int> B = new() { 2, 4, 6, 1, 8 };
+
+                                    var result = Backtracking.LongestCommonSubsequence(A, B);
+
+                                    Console.WriteLine("Najdaljše skupno podzaporedje (z backtrackingom): " + string.Join(", ", result));
+                                }
+                                break;
+                            case Backtracking.Algorithm.Opinion:
+                                {
+                                    const int n = 4; // Example grid size (5x5)
+                                    /*
+                                    int[,] grid = new int[n, n]
+                                    {
+                                        {3, 9, 3, 9},
+                                        {2, 2, 4, 9},
+                                        {9, 3, 9, 8},
+                                        {8, 9, 7, 8},
+                                    };
+                                    */
+                                    int[,] grid = new int[6, 6]
+                                    {
+                                        { 5, 4, 5, 4, 1, 8 },
+                                        { 1, 9, 5, 5, 4, 2 },
+                                        { 8, 8, 8, 6, 9, 1 },
+                                        { 4, 1, 4, 1, 1, 6 },
+                                        { 1, 4, 9, 3, 9, 9 },
+                                        { 8, 3, 9, 4, 8, 9 }
+                                    };
+                                    
+                                    Console.WriteLine("Initial Grid:");
+                                    Backtracking.OpinionChange.PrintGrid(grid, grid.GetLength(0));
+
+                                    Backtracking.OpinionChange.SpreadOpinion(grid, 0);
+
+                                    Console.WriteLine($"Number of opinion changes: {Backtracking.OpinionChange.globalDepth}");
                                 }
                                 break;
                             case Backtracking.Algorithm.Knapsack:

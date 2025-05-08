@@ -22,6 +22,20 @@ namespace Borut.Lectures.AlgorithmsRST
         NetworkFlows
     }
 
+    public struct Position
+    {
+        public Position(int x, int y) { X = x; Y = y; }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public byte State { get; set; }
+
+        public override string ToString()
+        {
+            return $"({X},{Y}) -> {State}";
+        }
+    }
+
     /// <summary>
     /// The item class will often be used.
     /// </summary>
@@ -275,7 +289,7 @@ namespace Borut.Lectures.AlgorithmsRST
     }
 
     public static class ExtensionMethods
-    {        
+    {
         public static string ToString<T>(this T[] array, int round = -1)
         {
             StringBuilder sb = new StringBuilder();

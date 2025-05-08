@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading.Channels;
 
 namespace Borut.Lectures.AlgorithmsRST
 {
@@ -13,10 +16,13 @@ namespace Borut.Lectures.AlgorithmsRST
         {
             DFS,
             NQueens,
+            NKnights,
             Exercise1,
             Knapsack,
+            Opinion,
             SubsetSum,
-            SubsetSumLargeScale
+            SubsetSumLargeScale,
+            CommonSubsequence
         }
 
         /// <summary>
@@ -338,6 +344,206 @@ namespace Borut.Lectures.AlgorithmsRST
                     bound += (volume - totalValue) * ((double)lstItems[j].Value / lstItems[j].Volume);
 
                 return bound > maxValue;
+            }
+        }
+
+        public static int NKnights(int dimension, int numKnights, bool printBoards = false)
+        {
+            int positionedKnights = 0;
+
+            // Backtracking stack
+            Stack<Board> stDFS = new Stack<Board>();
+            stDFS.Push(new Board(new List<Position>(), 0, 0));
+
+            while (stDFS.Count > 0)
+            {
+                var board = stDFS.Pop();
+
+                if (board.Knights.Count == numKnights)
+                {
+                    positionedKnights++;
+                    if (printBoards)
+                        board.Print(dimension);
+                    continue;
+                }
+
+                for (int row = board.StartPosition.X; row < dimension; row++)
+                {
+                    for (int col = (row == board.StartPosition.X ? board.StartPosition.Y : 0); col < dimension; col++)
+                    {
+                        if (!board.IsAttacked(row, col))
+                        {
+                            var newKnights = new List<Position>(board.Knights);
+                            newKnights.Add(new Position(row, col));
+
+                            stDFS.Push(new Board(newKnights, row, col + 1));
+                        }
+                    }
+                }
+            }
+
+            return positionedKnights;
+        }
+
+        private class Board
+        {
+            static Position[] attacks = {   new(1, 2), new(2, 1),
+                                            new(-1, 2), new(-2, 1),
+                                            new(-2, -1), new(-1, -2),
+                                            new(1, -2), new(2, -1) };
+
+            public List<Position> Knights { get; }
+            public Position StartPosition;
+
+            public Board(List<Position> knights, int i, int j)
+            {
+                Knights = new List<Position>(knights);
+                StartPosition = new(i, j);
+            }
+
+            public bool IsAttacked(int i, int j)
+            {
+                foreach (var pos in this.Knights)
+                {
+                    for (int t = 0; t < attacks.Length; t++)
+                    {
+                        if (pos.X + attacks[t].X == i && pos.Y + attacks[t].Y == j)
+                            return true;
+                    }
+                }
+                return false;
+            }
+
+            public void Print(int n)
+            {
+                char[,] board = new char[n, n];
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                        board[i, j] = '.';
+
+                foreach (var pos in this.Knights)
+                    board[pos.X, pos.Y] = 'K';
+
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                        Console.Write(board[i, j] + " ");
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public static List<int> LongestCommonSubsequence(List<int> A, List<int> B)
+        {
+            return LongestCommonSubsequenceRec(A, B, 0, 0);
+        }
+
+        private static List<int> LongestCommonSubsequenceRec(List<int> A, List<int> B, int i, int j)
+        {
+            if (i >= A.Count || j >= B.Count)
+                return new List<int>();
+
+            if (A[i] == B[j])
+            {
+                var res = LongestCommonSubsequenceRec(A, B, i + 1, j + 1);
+                res.Insert(0, A[i]);
+                return res;
+            }
+            else
+            {
+                var skipA = LongestCommonSubsequenceRec(A, B, i + 1, j);
+                var skipB = LongestCommonSubsequenceRec(A, B, i, j + 1);
+                return skipA.Count > skipB.Count ? skipA : skipB;
+            }
+        }
+
+        public class OpinionChange
+        {
+            static int[] dx = { -1, 1, 0, 0 }; // Directions for moving up, down, left, right
+            static int[] dy = { 0, 0, -1, 1 };
+
+            // Function to check if the cell is within the bounds of the grid
+            public static bool IsValid(int x, int y, int n)
+            {
+                return x >= 0 && y >= 0 && x < n && y < n;
+            }
+
+            public static int globalDepth = int.MaxValue;
+
+            public static void SpreadOpinion(int[,] grid, int depth)
+            {
+                // Get neighbors different from 0,0                
+                int n = grid.GetLength(0);
+
+                Queue<(int X, int Y)> qArea = new Queue<(int, int)>();
+                HashSet<(int X, int Y)> hshArea = new HashSet<(int X, int Y)>();
+                HashSet<int> hshBoundaryValues = new HashSet<int>();
+                hshArea.Add((0, 0));
+                qArea.Enqueue((0, 0));
+
+                while (qArea.Count > 0)
+                {
+                    (int X, int Y) cell = qArea.Dequeue();
+                    int targetOpinion = grid[cell.X, cell.Y];
+
+                    // Check all 4 neighboring cells
+                    for (int i = 0; i < 4; i++)
+                    {
+                        int nx = cell.X + dx[i];
+                        int ny = cell.Y + dy[i];
+
+                        if (IsValid(nx, ny, n) && !hshArea.Contains((nx, ny)))
+                        {
+                            // If the neighbor has the same opinion as the target, propagate
+                            if (grid[nx, ny] == targetOpinion)
+                            {
+                                hshArea.Add((nx, ny));
+                                qArea.Enqueue((nx, ny));
+                            }
+                            // Otherwise, change the opinion and count it as a change
+                            else
+                            {
+                                hshBoundaryValues.Add(grid[nx, ny]);                                                                
+                            }
+                        }
+                    }
+                }
+
+                if (hshArea.Count == grid.Length)
+                {
+                    if(globalDepth > depth)
+                        globalDepth = depth;
+                    return;
+                }
+
+                if (globalDepth <= depth)
+                    return;
+
+                int min = int.MaxValue;
+                foreach(int recolor in hshBoundaryValues)
+                {
+                    int[,] gridNew = (int[,])grid.Clone();
+                    foreach(var pos in hshArea)
+                    {
+                        gridNew[pos.X, pos.Y] = recolor;
+                    }
+
+                    SpreadOpinion(gridNew, depth + 1);
+                }
+                return;
+            }
+
+            public static void PrintGrid(int[,] grid, int n)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        Console.Write(grid[i, j] + " ");
+                    }
+                    Console.WriteLine();
+                }
             }
         }
     }
