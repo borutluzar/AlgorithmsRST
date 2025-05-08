@@ -280,6 +280,68 @@ namespace Borut.Lectures.AlgorithmsRST
         }
 
         /// <summary>
+        /// An approach with tabulation works. 
+        /// The idea behind is that there are only quadratic number of 
+        /// all possible shuffles in terms of the longest string.
+        /// </summary>
+        public static bool ShuffleStringTabu(string a, string b, string c)
+        {
+            if (a.Length + b.Length > c.Length) throw new Exception("Incorrect input");
+
+            if (a.Length == 0 || b.Length == 0)
+            {
+                if (b == c || a == c) return true;
+                else return false;
+            }
+
+            int m = a.Length;
+            int n = b.Length;
+
+            // Initialize the matrix for tabulation
+            bool[,] matCheckSubshuffle = new bool[m + 1, n + 1];
+
+            // Set starting point
+            matCheckSubshuffle[0, 0] = true;
+
+            // Fill the first column
+            for (int i = 1; i <= m; i++)
+            {
+                matCheckSubshuffle[i, 0] = matCheckSubshuffle[i - 1, 0] && a[i - 1] == c[i - 1];
+            }
+
+            // Fill the first row
+            for (int j = 1; j <= n; j++)
+            {
+                matCheckSubshuffle[0, j] = matCheckSubshuffle[0, j - 1] && b[j - 1] == c[j - 1];
+            }
+
+            // Fill the remaining cells row by row
+            for (int i = 1; i <= m; i++)
+            {
+                for (int j = 1; j <= n; j++)
+                {
+                    bool takeFromA = matCheckSubshuffle[i - 1, j] && a[i - 1] == c[i + j - 1];
+                    bool takeFromB = matCheckSubshuffle[i, j - 1] && b[j - 1] == c[i + j - 1];
+                    matCheckSubshuffle[i, j] = takeFromA || takeFromB;
+                }
+            }
+
+            /* Write table out for debugging
+            for (int i = 0; i <= m; i++)
+            {
+                for (int j = 0; j <= n; j++)
+                {
+                    Console.Write($"{matCheckSubshuffle[i, j]}\t");
+                }
+                Console.WriteLine();
+            }
+            */
+
+            return matCheckSubshuffle[m, n];
+        }
+               
+
+        /// <summary>
         /// Vankin's mile is a game on a square matrix where we start in a given cell
         /// (we assume cell (0,0), otherwise we have cells that are irrelevant for the problem)
         /// and by stepping one step right or one step down, we search for the path with maximum sum of values.
@@ -573,8 +635,7 @@ namespace Borut.Lectures.AlgorithmsRST
                     // If this bar is lower than top of stack, then calculate area of
                     // rectangle with stack top as the smallest (or minimum height) bar.
                     // 'i' is 'right index' for the top and element before top in stack is 'left index'
-                    stackTop = histValues[stack.Peek()];
-                    stack.Pop();
+                    stackTop = histValues[stack.Pop()];
 
                     if (stack.Count > 0)
                         area = stackTop * (i - stack.Peek() - 1);
@@ -589,8 +650,7 @@ namespace Borut.Lectures.AlgorithmsRST
             // every popped bar as the smallest bar
             while (stack.Count > 0)
             {
-                stackTop = histValues[stack.Peek()];
-                stack.Pop();
+                stackTop = histValues[stack.Pop()];
 
                 if (stack.Count > 0)
                     area = stackTop * (i - stack.Peek() - 1);
@@ -822,7 +882,7 @@ namespace Borut.Lectures.AlgorithmsRST
                     }
                 }
             }
-            return matValues[lst1.Count,lst2.Count];
+            return matValues[lst1.Count, lst2.Count];
         }
     }
 }
